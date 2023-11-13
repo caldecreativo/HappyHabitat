@@ -18,4 +18,4 @@ const familySchema = new mongoose.Schema({
 
 const FamilyModel = mongoose.model("families", familySchema)
 
-module.exports = FamilyModel
+module.exports = FamilyModel;

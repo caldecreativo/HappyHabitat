@@ -11,4 +11,5 @@ const penguinUserSchema = new mongoose.Schema({
     {collation: "PenguinUser"}
 );
 let PenguinUserModel = mongoose.model("PenguinUser", penguinUserSchema)
+
 module.exports = PenguinUserModel;

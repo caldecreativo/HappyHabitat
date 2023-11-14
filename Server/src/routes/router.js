@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const { body, validationResult } = require('express-validator');
 
- router.get('/', (req, res) => {
-   res.send('Hello World!');
- });
+//  router.get('/', (req, res) => {
+//    res.send('Hello World!');
+//  });
 
 // //User
 const userRegisterRoute = require('./users/regUser');
@@ -25,7 +26,38 @@ const userRegisterRoute = require('./users/regUser');
 
 
 // //User routes
-router.post('/register', userRegisterRoute)
+router.post('/register', 
+body('userName')
+    .isLength({ min: 5 }).withMessage('Brugernavn skal være minimum 6 karaktere')
+    .custom((value) => {
+      if (!value) {
+        throw new Error('Der mangler at blive udfyldt felter');
+      }
+      if (value.includes("'") || value.includes("-")) {
+        throw new Error('Brugernavn må ikke indeholde apostrof eller bindestreg');
+      }
+      return true;
+    }),
+body('email').isEmail().withMessage('Dette er ikke en email')
+.custom((value, { req }) => {
+  if (!value) {
+    throw new Error('Der mangler at blive udfyldt felter');
+  }
+  return true;
+}),
+body('password')
+  .isLength({ min: 6 }).withMessage('Password skal være minimum 6 karaktere')
+  .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/).withMessage('Password skal indeholde minimum ét lille bogstav, ét stort bogstav, samt tal')
+  .custom((value) => {
+    if (!value) {
+      throw new Error('Der mangler at blive udfyldt felter');
+    }
+    if (value.includes("'") || value.includes("-")) {
+      throw new Error('Password må ikke indeholde apostrof eller bindestreg');
+    }
+    return true;
+  }),
+userRegisterRoute)
 // router.post('/login', userLoginRoute)
 // router.put('/updateUser/:id', updateUser)
 

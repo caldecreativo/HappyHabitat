@@ -1,8 +1,22 @@
 const userModel = require('../../models/UserModel')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const { validationResult } = require('express-validator');
+
+
+const jwtSecretKey = "" + process.env.JWT_KEY;
+
 
 // Registre user
 module.exports = async (req, res) => {
+    //Validates userinput with express-validator
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        // Seperates the error messages on seperate lines
+        const errorMessages = errors.array().map(error => error.msg).join('\n');
+      return res.status(422).send(errorMessages);
+    }
+
     try {
         // Get the users data from input
         const {userName, email, password} = req.body;
@@ -21,8 +35,8 @@ module.exports = async (req, res) => {
             DbUserID = 1;
         }
 
-        // Validation
-        if (!userName || !email || !password) return res.status(422).send("Der er manglende udfyldese af felter");
+        // // Validation
+        // if (!userName || !email || !password) return res.status(422).send("Der er manglende udfyldese af felter");
 
         // Existing users
         const existingUser = await userModel.findOne({ email });
@@ -41,6 +55,15 @@ module.exports = async (req, res) => {
             email,
             password: hashedPassword,
         });
+
+        // Generate JWT token
+        const token = jwt.sign(
+            { userID: penguinUser.userID, email: penguinUser.email },
+            jwtSecretKey,
+            { expiresIn: "1h" }
+        );
+
+        penguinUser.token = token;
 
 
 

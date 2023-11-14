@@ -14,7 +14,7 @@ const familySchema = new mongoose.Schema({
         type: String,
     }]
 },
-{collation: "families"})
+{collection: "families"})
 
 const FamilyModel = mongoose.model("families", familySchema)
 

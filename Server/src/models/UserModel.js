@@ -8,8 +8,8 @@ const penguinUserSchema = new mongoose.Schema({
     token: {type: String},
     family_id: [{type: String}]
 },
-    {collation: "PenguinUser"}
+    {collection: "Users"}
 );
-let PenguinUserModel = mongoose.model("PenguinUser", penguinUserSchema)
+let PenguinUserModel = mongoose.model("Users", penguinUserSchema)
 
 module.exports = PenguinUserModel;

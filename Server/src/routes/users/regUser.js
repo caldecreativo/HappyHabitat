@@ -1,4 +1,5 @@
 const userModel = require('../../models/UserModel')
+const bcrypt = require('bcrypt')
 
 // Registre user
 module.exports = async (req, res) => {
@@ -20,13 +21,25 @@ module.exports = async (req, res) => {
             DbUserID = 1;
         }
 
+        // Validation
+        if (!userName || !email || !password) return res.status(422).send("Der er manglende udfyldese af felter");
+
+        // Existing users
+        const existingUser = await userModel.findOne({ email });
+        if (existingUser) {
+            return res.status(409).send("Brugeren findes allerede")
+        }
+
+        // Encrypted password to DB
+        const hashedPassword = await bcrypt.hash(password, 10);
+
 
         // Create the user in the database
         const penguinUser = await userModel.create({
             userID: `user${DbUserID}`,
             userName,
             email,
-            password
+            password: hashedPassword,
         });
 
 

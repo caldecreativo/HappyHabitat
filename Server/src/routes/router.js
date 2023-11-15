@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { body } = require('express-validator');
+const { body, param } = require('express-validator');
 
 
 // //User
@@ -13,12 +13,12 @@ const deleteUser = require('./users/deleteUser')
 
 
 // //Teams Routes
-// const createTeamsRoute = require("./routes/teams/createTeamsRoute");
+const createFamiliesRoute = require("./families/regFam");
 // const updateTeamsRoute = require("./routes/teams/updateTeamRoute");
 // const deleteTeamsRoute = require("./routes/teams/deleteTeamRoute");
-// const addUserToTeamRoute = require("./routes/teams/addToTeamRoute");
+const addUserToFamilyRoute = require("./families/addToFam");
 // const removeUserFromTeamRoute = require("./routes/teams/removeUserFromTeamRoute")
-// const userAndTeamsRoute = require("./routes/teams/userAndTeamsRoute")
+
 
 
 // //User routes
@@ -26,7 +26,7 @@ const deleteUser = require('./users/deleteUser')
 // register
 router.post('/register', 
 body('userName')
-    .isLength({ min: 5 }).withMessage('Brugernavn skal være minimum 6 karaktere')
+    .isLength({ min: 5 }).withMessage('Brugernavn skal være minimum 5 karaktere')
     .custom((value) => {
       if (!value) {
         throw new Error('Der mangler at blive udfyldt felter');
@@ -88,14 +88,38 @@ updateUser)
 
 router.delete('/deleteUser/:id', deleteUser)
 
-// //Team Routes
-// router.post("/teams/create", createTeamsRoute);
-// router.get("/teams/:teamId", readAllTeamsTodosRoute);
+// //Family Routes
+
+// Register Family
+router.post("/families/register", 
+body('familyName')
+    .isLength({ min: 5 }).withMessage('Familienavn skal være minimum 5 karaktere')
+    .custom((value) => {
+      if (value.includes("'") || value.includes("-")) {
+        throw new Error('Familienavn må ikke indeholde apostrof eller bindestreg');
+      }
+      return true;
+    }),
+createFamiliesRoute);
 // router.put("/teams/:id", updateTeamsRoute);
 // router.delete("/teams/:teamId", deleteTeamsRoute);
-// router.post("/teams/addToTeam/:teamID", addUserToTeamRoute);
+
+// Add To Family
+router.post("/families/addToFamily/:familyID",
+// Validate familyID
+param('familyID')
+.trim()
+.isLength({ min: 5 }).withMessage('FamilieID skal være minimum 5 karakterer')
+.matches(/family\d+/).withMessage('FamilieID skal følge formatet "family[nummer]'),
+
+// Validate userID
+body('userID')
+.trim()
+.isLength({ min: 5 }).withMessage('BrugerID skal være minimum 5 karakterer')
+.matches(/user\d+/).withMessage('BrugerID skal følge formatet "user[nummer]'),
+addUserToFamilyRoute);
 // router.post("/teams/removeUserFromTeam/:teamID", removeUserFromTeamRoute);
 
-// router.get("/teams/addMember/:teamId", userAndTeamsRoute);
+
 
 module.exports = router;

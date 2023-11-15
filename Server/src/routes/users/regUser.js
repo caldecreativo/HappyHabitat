@@ -35,9 +35,6 @@ module.exports = async (req, res) => {
             DbUserID = 1;
         }
 
-        // // Validation
-        // if (!userName || !email || !password) return res.status(422).send("Der er manglende udfyldese af felter");
-
         // Existing users
         const existingUser = await userModel.findOne({ email });
         if (existingUser) {

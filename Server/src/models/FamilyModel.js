@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const familySchema = new mongoose.Schema({
-    fimilyID: {
+    familyID: {
         type: String,
         required: true,
         unique: true
@@ -14,8 +14,8 @@ const familySchema = new mongoose.Schema({
         type: String,
     }]
 },
-{collection: "families"})
+{collection: "Families"})
 
-const FamilyModel = mongoose.model("families", familySchema)
+const FamilyModel = mongoose.model("Families", familySchema)
 
 module.exports = FamilyModel;

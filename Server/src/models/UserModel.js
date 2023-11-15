@@ -5,7 +5,7 @@ const penguinUserSchema = new mongoose.Schema({
     userName: {type: String, default: null},
     email: {type: String, unique: true},
     password: {type: String, required: true},
-    token: {type: String},
+    userToken: {type: String},
     family_id: [{type: String}]
 },
     {collection: "Users"}

@@ -12,18 +12,18 @@ const deleteUser = require('./users/deleteUser')
 
 
 
-// //Teams Routes
+// // Family 
 const createFamiliesRoute = require("./families/regFam");
-// const updateTeamsRoute = require("./routes/teams/updateTeamRoute");
-// const deleteTeamsRoute = require("./routes/teams/deleteTeamRoute");
 const addUserToFamilyRoute = require("./families/addToFam");
-// const removeUserFromTeamRoute = require("./routes/teams/removeUserFromTeamRoute")
+const removeUserFromFamilyRoute = require("./families/removeFromFam")
+const updateFamilyRoute = require("./families/updateFam");
+const deleteFamilyRoute = require("./families/deleteFam");
 
 
 
 // //User routes
 
-// register
+// register user
 router.post('/register', 
 body('userName')
     .isLength({ min: 5 }).withMessage('Brugernavn skal være minimum 5 karaktere')
@@ -57,7 +57,7 @@ body('password')
   }),
 userRegisterRoute)
 
-// Login
+// Login user
 router.post('/login', 
 body('email')
 .isEmail().withMessage('Dette er ikke en gyldig email')
@@ -78,7 +78,7 @@ body('password')
 }),
 userLoginRoute)
 
-// Update
+// Update user
 router.put('/updateUser/:id',
 body('newEmail').optional().isEmail().withMessage('Ny email er ikke gyldig'),
   body('newPassword').optional()
@@ -86,6 +86,7 @@ body('newEmail').optional().isEmail().withMessage('Ny email er ikke gyldig'),
   .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/).withMessage('Nyt password skal indeholde mindst ét lille bogstav, ét stort bogstav og et tal'),
 updateUser)
 
+// Delete user
 router.delete('/deleteUser/:id', deleteUser)
 
 // //Family Routes
@@ -101,25 +102,59 @@ body('familyName')
       return true;
     }),
 createFamiliesRoute);
-// router.put("/teams/:id", updateTeamsRoute);
-// router.delete("/teams/:teamId", deleteTeamsRoute);
 
 // Add To Family
 router.post("/families/addToFamily/:familyID",
-// Validate familyID
+// Validate familyID in URL
 param('familyID')
 .trim()
 .isLength({ min: 5 }).withMessage('FamilieID skal være minimum 5 karakterer')
-.matches(/family\d+/).withMessage('FamilieID skal følge formatet "family[nummer]'),
+.matches(/family\d+/).withMessage('FamilieID skal følge formatet family[nummer]'),
 
-// Validate userID
+// Validate userID in body
 body('userID')
 .trim()
 .isLength({ min: 5 }).withMessage('BrugerID skal være minimum 5 karakterer')
-.matches(/user\d+/).withMessage('BrugerID skal følge formatet "user[nummer]'),
+.matches(/user\d+/).withMessage('BrugerID skal følge formatet user[nummer]'),
 addUserToFamilyRoute);
-// router.post("/teams/removeUserFromTeam/:teamID", removeUserFromTeamRoute);
 
+// Remove user from family
+router.post("/families/removeUserFromFamily/:familyID",
+// Validate familyID in URL
+param('familyID')
+.trim()
+.isLength({ min: 5 }).withMessage('FamilieID skal være minimum 5 karakterer')
+.matches(/family\d+/).withMessage('FamilieID skal følge formatet family[nummer]'),
+
+// Validate userID in body
+body('userID')
+.trim()
+.isLength({ min: 5 }).withMessage('BrugerID skal være minimum 5 karakterer')
+.matches(/user\d+/).withMessage('BrugerID skal følge formatet user[nummer]'),
+ removeUserFromFamilyRoute);
+
+// Update family
+router.put("/families/updateFamily/:familyID", 
+ // Validate familyID in URL
+ param('familyID')
+ .trim()
+ .matches(/family\d+/).withMessage('FamilieID skal følge formatet family[nummer]'),
+
+// Validate new family name in body
+body('newFamilyName')
+ .trim()
+ .isLength({ min: 2 }).withMessage('Nyt familiennavn skal være minimum 2 karakterer')
+ .not().isEmpty().withMessage('Nyt familiennavn kan ikke være tomt')
+ .custom((value) => {
+  if (value.includes("'") || value.includes("-")) {
+    throw new Error('Det Nye familienavn må ikke indeholde apostrof eller bindestreg');
+  }
+  return true;
+}),
+updateFamilyRoute);
+
+// Delete family
+router.delete("/families/deleteFamily/:familyID",deleteFamilyRoute);
 
 
 module.exports = router;

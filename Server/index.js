@@ -3,6 +3,7 @@ const mongoose = require ('mongoose')
 const router = require('./src/routes/router')
 const dotenv = require('dotenv')
 const cors = require('cors')
+const helmet = require('helmet')
 
 dotenv.config()
 
@@ -20,6 +21,14 @@ app.use(cors(
     }
 ))
 
+app.use(
+    helmet.contentSecurityPolicy({
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'"],
+      },
+    })
+  );
 
 mongoose.connect(process.env.MONGO_ENDPOINT).then(() => {
     console.log('server connected, port8081')

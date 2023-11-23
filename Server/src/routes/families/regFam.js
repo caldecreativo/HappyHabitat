@@ -4,15 +4,16 @@ const { validationResult } = require('express-validator');
 
 module.exports = async(req, res) => {
     // Validates user input with express-validator
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        // Separates the error messages on separate lines
-        const errorMessages = errors.array().map(error => error.msg).join('\n');
-        return res.status(422).send(errorMessages);
-    }
+    // const errors = validationResult(req);
+    // if (!errors.isEmpty()) {
+    //     // Separates the error messages on separate lines
+    //     const errorMessages = errors.array().map(error => error.msg).join('\n');
+    //     return res.status(422).send(errorMessages);
+    // }
 
     try {
         // Get family data from request
+        console.log(req)
         const { familyName, userID } = req.body;
 
         // Finds last object in the Family collection
@@ -35,6 +36,7 @@ module.exports = async(req, res) => {
             familyName,
             familyMember: []
         });
+        newFamily.familyMember.push(userID);
 
         // Attach user to family if userID is provided
         if (userID) {
@@ -44,7 +46,7 @@ module.exports = async(req, res) => {
             }
             userObject.family_id = newFamily.familyID; // Assuming UserModel has a family_id field
             await userObject.save();
-            newFamily.familyMember.push(userID);
+           
         }
 
         // Save family to the database

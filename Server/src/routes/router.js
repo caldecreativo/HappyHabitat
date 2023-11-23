@@ -11,15 +11,15 @@ const updateUser = require('./users/updateUser')
 const deleteUser = require('./users/deleteUser')
 
 
-
 // // Family 
 const createFamiliesRoute = require("./families/regFam");
 const addUserToFamilyRoute = require("./families/addToFam");
 const removeUserFromFamilyRoute = require("./families/removeFromFam")
 const updateFamilyRoute = require("./families/updateFam");
 const deleteFamilyRoute = require("./families/deleteFam");
+const readAllUsers = require('./users/readAllUsers');
 
-
+router.get('/users', readAllUsers)
 
 // //User routes
 
@@ -94,7 +94,7 @@ router.delete('/deleteUser/:id', deleteUser)
 // Register Family
 router.post("/families/register", 
 body('familyName')
-    .isLength({ min: 5 }).withMessage('Familienavn skal være minimum 5 karaktere')
+    .isLength({ min: 1 }).withMessage('Familienavn skal være minimum 5 karaktere')
     .custom((value) => {
       if (value.includes("'") || value.includes("-")) {
         throw new Error('Familienavn må ikke indeholde apostrof eller bindestreg');
@@ -104,18 +104,18 @@ body('familyName')
 createFamiliesRoute);
 
 // Add To Family
-router.post("/families/addToFamily/:familyID",
-// Validate familyID in URL
-param('familyID')
+router.post("/families/addToFamily",
+// Validate familyID in body
+body('familyName')
 .trim()
-.isLength({ min: 5 }).withMessage('FamilieID skal være minimum 5 karakterer')
-.matches(/family\d+/).withMessage('FamilieID skal følge formatet family[nummer]'),
+.isLength({ min: 2 }).withMessage('FamilieName skal være minimum 2 karakterer'),
+// .matches(/family\d+/).withMessage('FamilieID skal følge formatet family[nummer]'),
 
 // Validate userID in body
 body('userID')
-.trim()
-.isLength({ min: 5 }).withMessage('BrugerID skal være minimum 5 karakterer')
-.matches(/user\d+/).withMessage('BrugerID skal følge formatet user[nummer]'),
+.trim(),
+// .isLength({ min: 5 }).withMessage('BrugerID skal være minimum 5 karakterer')
+// .matches(/user\d+/).withMessage('BrugerID skal følge formatet user[nummer]'),
 addUserToFamilyRoute);
 
 // Remove user from family

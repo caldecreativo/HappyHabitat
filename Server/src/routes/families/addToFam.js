@@ -4,20 +4,21 @@ const { validationResult } = require('express-validator');
 
 module.exports = async (req,res) => {
     // Validates user input with express-validator
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        // Separates the error messages on separate lines
-        const errorMessages = errors.array().map(error => error.msg).join('\n');
-        return res.status(422).send(errorMessages);
-    }
+    // const errors = validationResult(req);
+    // if (!errors.isEmpty()) {
+    //     // Separates the error messages on separate lines
+    //     const errorMessages = errors.array().map(error => error.msg).join('\n');
+    //     return res.status(422).send(errorMessages);
+    // }
 
     try {
-        // Get FamID from params & UserID from body
-        const familyID = req.params.familyID;
-        const {userID} = req.body;
+        // Get FamID from body & UserID 
+        console.log(req)
+        const familyName = req.body.familyName;
+        const userID = req.body.userID;
 
         // Find family by ID
-        const family = await FamilyModel.findOne({ familyID: familyID });
+        const family = await FamilyModel.findOne({ familyName: familyName });
         if (!family) {
             return res.status(404).send("Familie ikke fundet");
         }
@@ -40,7 +41,7 @@ module.exports = async (req,res) => {
         if (!user.family_id) {
             user.family_id = [];
         }
-        user.family_id.push(familyID)
+        user.family_id.push(familyName)
 
         // Save family and user object
         await family.save();

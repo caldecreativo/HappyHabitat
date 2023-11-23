@@ -1,10 +1,10 @@
 // store/index.js
 import { createStore } from 'vuex';
-import user from './user.store'; 
+import user from './user.store';
 
 export default createStore({
   modules: {
-    user, 
- 
+    user
   }
+  // Du kan tilføje flere moduler her
 });

@@ -2,7 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import MainView from '../views/MainView.vue';
 import RegUserView from '../views/RegUserView.vue';
 import LogView from '../views/LoginView.vue';
-import addFam from '../views/addFamView.vue'
+import addExFamView from '../views/addExFamView.vue'
+import chooseFam from '../views/chooseFamView.vue';
+import newFam from '../views/newFamView.vue'
 
 const routes = [
   {
@@ -21,12 +23,20 @@ const routes = [
     component: LogView
   },
   {
-  path: '/tilføj-familie',
-  name: 'Tilføj familie',
-  component: addFam
+  path: '/tilføj-eksisterende-familie',
+  name: 'Tilføj eksisterende familie',
+  component: addExFamView
+},
+{
+path: '/vælg-familie',
+name: 'vælg familie',
+component: chooseFam
+},
+{
+path: '/ny-familie',
+name: 'ny familie',
+component: newFam
 }
-
-  
 ]
 
 const router = createRouter({

@@ -1,54 +1,48 @@
 const User = require('../../models/UserModel');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const { validationResult } = require('express-validator');
 
 const jwtSecretKey = "" + process.env.JWT_KEY;
 
 module.exports = async (req, res) => {
-     //Validates userinput with express-validator
-     const errors = validationResult(req);
-     if (!errors.isEmpty()) {
-         // Seperates the error messages on seperate lines
-         const errorMessages = errors.array().map(error => error.msg).join('\n');
-       return res.status(422).send(errorMessages);
-     }
+  try {
+    // Hent brugerdata fra anmodningen
+    const {userName, email, password, newUserName, newEmail, newPassword } = req.body;
 
-     try {
-        // Get user data from input
-        const { email, password, newEmail, newPassword } = req.body;
+    // Find brugeren i databasen
+    const penguinUser = await User.findOne({ email });
 
-        // Find user in DB
-        const penguinUser = await User.findOne({ email });
+    // Hvis brugeren ikke findes
+    if (!penguinUser) {
+      return res.status(404).send("Bruger findes ikke");
+    }
 
-        // If the user does not exist
-        if (!penguinUser) {
-            return res.status(404).send("Bruger findes ikke");
-        }
+    // Hvis brugeren eksisterer
+    if (await bcrypt.compare(password, penguinUser.password)) {
+      // Opdater brugeroplysningerne
+      penguinUser.userName = newUserName || penguinUser.userName;
+      penguinUser.email = newEmail || penguinUser.email;
+      penguinUser.password = newPassword
+        ? await bcrypt.hash(newPassword, 10)
+        : penguinUser.password;
 
-        // If the user exist
-        if (await bcrypt.compare(password, penguinUser.password)) {
-            // Update users data
-            penguinUser.email = newEmail || penguinUser.email;
-            penguinUser.password = newPassword ? bcrypt.hashSync(newPassword, 10) : penguinUser.password;
+      // Gem de opdaterede brugeroplysninger i databasen
+      await penguinUser.save();
 
-            // Save updated user data in DB
-            await penguinUser.save();
+      // Generer en ny token
+      const userToken = jwt.sign(
+        { userID: penguinUser.userID, email: penguinUser.email },
+        jwtSecretKey,
+        { expiresIn: "1h" }
+      );
 
-            // Generate new token 
-            const userToken = jwt.sign(
-                { userID: penguinUser.userID, email: penguinUser.email },
-                jwtSecretKey,
-                { expiresIn: "1h" }
-            );
+      // Send de opdaterede oplysninger og token som svar
+      return res.status(200).send({ User: penguinUser, userToken: userToken });
+    }
 
-            // Send updated data and token as answer
-            return res.status(200).send({User: penguinUser, userToken: userToken})
-        }
-
-            //Error handling
-            return res.status(400).send("Forkerte oplysninger");
-     } catch (error) {
-        return res.status(500).json({error: error.messages});
-     }
-}
+    // Håndter fejl ved forkerte oplysninger
+    return res.status(400).send("Forkerte oplysninger");
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};

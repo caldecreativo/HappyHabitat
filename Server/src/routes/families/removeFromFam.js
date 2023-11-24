@@ -1,15 +1,7 @@
 const FamilyModel = require('../../models/FamilyModel');
 const UserModel = require('../../models/UserModel');
-const { validationResult } = require('express-validator');
 
 module.exports = async (req, res) => {
-     // Validates user input with express-validator
-     const errors = validationResult(req);
-     if (!errors.isEmpty()) {
-         // Separates the error messages on separate lines
-         const errorMessages = errors.array().map(error => error.msg).join('\n');
-         return res.status(422).send(errorMessages);
-     }
 
     try {
         // Get famID from params & userID from body

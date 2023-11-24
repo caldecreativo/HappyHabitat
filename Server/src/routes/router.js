@@ -79,7 +79,17 @@ body('password')
 userLoginRoute)
 
 // Update user
-router.put('/updateUser/:id',
+router.put('/updateUser',
+body('newUserName').optional().isLength({ min: 5 }).withMessage('Brugernavn skal være minimum 5 karaktere')
+.custom((value) => {
+  if (!value) {
+    throw new Error('Der mangler at blive udfyldt felter');
+  }
+  if (value.includes("'") || value.includes("-")) {
+    throw new Error('Brugernavn må ikke indeholde apostrof eller bindestreg');
+  }
+  return true;
+}),
 body('newEmail').optional().isEmail().withMessage('Ny email er ikke gyldig'),
   body('newPassword').optional()
   .isLength({ min: 6 }).withMessage('Nyt password skal være minimum 6 karakterer')
@@ -87,7 +97,7 @@ body('newEmail').optional().isEmail().withMessage('Ny email er ikke gyldig'),
 updateUser)
 
 // Delete user
-router.delete('/deleteUser/:id', deleteUser)
+router.delete('/deleteUser', deleteUser)
 
 // //Family Routes
 

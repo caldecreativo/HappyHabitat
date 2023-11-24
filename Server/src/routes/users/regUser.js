@@ -1,7 +1,6 @@
 const userModel = require('../../models/UserModel')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const { validationResult } = require('express-validator');
 
 
 const jwtSecretKey = "" + process.env.JWT_KEY;
@@ -9,13 +8,6 @@ const jwtSecretKey = "" + process.env.JWT_KEY;
 
 // Registre user
 module.exports = async (req, res) => {
-    // //Validates userinput with express-validator
-    // const errors = validationResult(req);
-    // if (!errors.isEmpty()) {
-    //     // Seperates the error messages on seperate lines
-    //     const errorMessages = errors.array().map(error => error.msg).join('\n');
-    //   return res.status(422).send(errorMessages);
-    // }
 
     try {
         // Get the users data from input

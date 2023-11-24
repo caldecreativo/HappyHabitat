@@ -5,6 +5,7 @@ module.exports = async (req, res) => {
         // Get user id from param
         const userId = req.params.id;
 
+        console.log('Delete user route called');
         // Find user in DB and delete
         const user = await User.findByIdAndDelete(userId);
 

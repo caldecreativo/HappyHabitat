@@ -1,10 +1,10 @@
 <template>
     <section class="addExFamView">
-        <h1> {{  userName }}</h1>
+        <h1> {{ userName }}</h1>
         <form @submit.prevent="addExFam">
             <div>
                 <input @focus="clearPlaceholder" @blur="event => restorePlaceholder(event, 'Tilføj Familie')" type="text"
-                    id="family" v-model="familyName"  placeholder="Tilføj Familie" required />
+                    id="family" v-model="familyName" placeholder="Tilføj Familie" required />
             </div>
             <button type="submit">Tilføj</button>
         </form>
@@ -13,6 +13,7 @@
 
 <script>
 import axios from 'axios';
+import router from '@/router';
 
 export default {
     data() {
@@ -32,7 +33,7 @@ export default {
         },
         restorePlaceholder(event) {
             if (event.target.value === '') {
-                event.target.placeholder = 'Tilføj Familie'; 
+                event.target.placeholder = 'Tilføj Familie';
             }
         },
 
@@ -48,20 +49,34 @@ export default {
         },
 
         async addExFam() {
-        console.log("trigger")
-        console.log(this.familyName)
-        // virker ikke!
-        await axios.post('http://localhost:8081/families/addToFamily', {
-            familyName: this.familyName,
-            userID: this.userID
-        
-        })
-        
+            try {
+                console.log("trigger")
+                console.log(this.familyName)
+                // virker!
+                const response =await axios.post('http://localhost:8081/families/addToFamily', {
+                    familyName: this.familyName,
+                    userID: this.userID
+                });
+                console.log(response)
 
-}
+                // Hvis familien er oprettet succesfuldt, gem familyName i localStorage
+                if (response && response.data) {
+                    localStorage.setItem('familyName', this.familyName);
+                    console.log('Familie tilføjet til localStorage');
+                }
+
+                await router.push("/bekraeft-bruger");
+
+            } catch (error) {
+                console.error('Fejl ved tilføjelse af familie:', error);
+            }
 
 
-        
+
+        }
+
+
+
     }
 }
 </script>

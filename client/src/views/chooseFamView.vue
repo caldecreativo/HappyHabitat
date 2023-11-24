@@ -3,7 +3,7 @@
         <h1> {{  userName }}</h1>
         <div class="btnBox">
         <router-link to="/ny-familie"><button class="frontBtn">Lav ny familie</button></router-link>
-        <router-link to="/tilføj-eksisterende-familie"><button class="frontBtn">Tilføj eksisterende familie</button></router-link>
+        <router-link to="/tilfoj-eksisterende-familie"><button class="frontBtn">Tilføj eksisterende familie</button></router-link>
       </div>
     </section>
 </template>

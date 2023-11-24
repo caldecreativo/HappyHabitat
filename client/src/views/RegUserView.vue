@@ -84,7 +84,7 @@ export default {
                 // 
                 this.errorMessage = '';
                 // Redirect to addFam
-                await router.push("/vælg-familie");
+                await router.push("/vaelg-familie");
 
 
             } catch (err) {

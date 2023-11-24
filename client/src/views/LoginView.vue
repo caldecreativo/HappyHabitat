@@ -2,24 +2,12 @@
     <section class="loginView">
         <form class="formView" @submit.prevent="login">
             <div>
-                <input 
-                    @focus="clearPlaceholder" 
-                    @blur="event => restorePlaceholder(event, 'email')" 
-                    type="text" 
-                    id="email"
-                    v-model="email" 
-                    placeholder="Email" 
-                    required />
+                <input @focus="clearPlaceholder" @blur="event => restorePlaceholder(event, 'email')" type="text" id="email"
+                    v-model="email" placeholder="Email" required />
             </div>
             <div>
-                <input 
-                    @focus="clearPlaceholder" 
-                    @blur="event => restorePlaceholder(event, 'Password')" 
-                    type="password"
-                    id="password" 
-                    v-model="password" 
-                    placeholder="Password" 
-                    required />
+                <input @focus="clearPlaceholder" @blur="event => restorePlaceholder(event, 'Password')" type="text"
+                    id="password" v-model="password" placeholder="Password" required />
             </div>
 
             <div class="confirmBox">
@@ -30,38 +18,72 @@
 </template>
     
 
-<script setup>
-import { ref } from 'vue';
+<script>
+import router from '../router/index'
+import axios from 'axios';
 
-const email = ref('');
-const password = ref('');
+export default {
+    data() {
+        return {
+            email: '',
+            password: '',
+        };
+    },
 
-const clearPlaceholder = (event) => {
-    event.target.placeholder = '';
-};
+    methods: {
+        clearPlaceholder(event) {
+            event.target.placeholder = '';
+        },
+        restorePlaceholder(event, originalPlaceholder) {
+            if (event.target.value === '') {
+                event.target.placeholder = originalPlaceholder;
+            }
+        },
 
-const restorePlaceholder = (event, originalPlaceholder) => {
-    if (event.target.value === '') {
-        event.target.placeholder = originalPlaceholder;
+
+        async login() {
+            try {
+                console.log("trigger")
+            // virker ikke!
+            const response =await axios.post('http://localhost:8081/login', {
+                email: this.email,
+                password: this.password
+            })
+            
+            
+            // Save user & token in localStorage
+            localStorage.setItem('user', JSON.stringify(response.data));
+            
+            if (response.data.userToken) {
+                localStorage.setItem('token', response.data.userToken);
+            }
+
+            await router.push("/rediger-bruger");
+
+            } catch(err) {
+                console.log(err);
+            }
+            
+
+
+        }
+
+
+
     }
-};
-
-const login = () => {
-    // Tilføj logik til at håndtere login her
-    alert('Login logic goes here');
-};
+}
 </script>
 
 
 <style scoped>
 .formView {
 
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-gap: 50px;
-margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    margin-top: 40px;
 }
 
 input {
@@ -74,12 +96,13 @@ input {
     color: white;
     font-size: 55px;
     text-align: center;
-    
+
 }
 
 input::placeholder {
-  color: white;
-  opacity: 1; /* Fjerner gennemsigtighed */
+    color: white;
+    opacity: 1;
+    /* Fjerner gennemsigtighed */
 }
 
 

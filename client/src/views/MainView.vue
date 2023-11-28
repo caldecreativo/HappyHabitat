@@ -2,7 +2,7 @@
     <section class="logView">
       <div class="btnBox">
         <router-link to="/login"><button class="frontBtn">Login</button></router-link>
-        <router-link to="/registrer"><button class="frontBtn">Registrer</button></router-link>
+        <router-link to="/register"><button class="frontBtn">Registrer</button></router-link>
       </div>
       <div class="pLogin">
         <p>Glemt login?</p>

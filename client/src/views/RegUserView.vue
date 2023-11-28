@@ -4,6 +4,7 @@
             <div>
                 <input @focus="clearPlaceholder($event)" @blur="restorePlaceholder($event, 'Brugernavn')" type="text"
                     id="username" v-model="user.userName" placeholder="Brugernavn" required />
+
             </div>
             <div>
                 <input @focus="clearPlaceholder($event)" @blur="restorePlaceholder($event, 'email')" type="text" id="email"
@@ -46,9 +47,13 @@ export default {
             },
             errorMessage: '',
             statusMsg: '',
+
         };
+
+
     },
     methods: {
+
         clearPlaceholder(event) {
             event.target.placeholder = '';
         },
@@ -59,7 +64,31 @@ export default {
             }
         },
 
+        validateUsername() {
+            const regex = /^(?=.*[A-Z])(?=.*[a-z])(?!.*['\s-])/;
+            if (!this.user.userName) {
+                this.errorMessage = 'Brugernavn er påkrævet.';
+                return false;
+            } else if (this.user.userName.length < 5) {
+                this.errorMessage = 'Brugernavn skal være minimum 5 karaktere';
+                return false;
+            } else if (!regex.test(this.user.userName)) {
+                this.errorMessage = 'Brugernavn skal indeholde ét stort bogstav, ét lille bogstav og må ikke indeholde apostrof, bindestreg eller mellemrum';
+                return false;
+            }
+            return true;
+        },
+
+
+
         async signUp() {
+            this.errorMessage = '';
+
+            const isUsernameValid = this.validateUsername();
+            if (!isUsernameValid) {
+                return;
+            }
+
             // Check if passwords are the same
             if (this.user.password !== this.user.confirmPass) {
                 this.errorMessage = "Passwords matcher ikke";
@@ -91,6 +120,7 @@ export default {
                 console.log("fail")
                 console.log(this.user)
                 console.log(err)
+                this.errorMessage = err.message || "En fejl opstod under tilmelding";
             }
         }
 

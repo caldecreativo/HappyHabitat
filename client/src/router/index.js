@@ -16,7 +16,7 @@ const routes = [
     component: MainView,
   },
   {
-    path: "/registrer",
+    path: "/register",
     name: "registrer bruger",
     component: RegUserView,
   },

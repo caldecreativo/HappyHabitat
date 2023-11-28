@@ -40,7 +40,6 @@ export default {
             }
         },
 
-
         async login() {
             try {
                 console.log("trigger")

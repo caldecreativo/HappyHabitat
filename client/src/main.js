@@ -1,9 +1,14 @@
-// main.js
 import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
-import { createPinia } from 'pinia'
+import Vuelidate from 'vuelidate';
 
-const pinia = createPinia()
+import Vue3TouchEvents from "vue3-touch-events";
 
-createApp(App).use(pinia).use(router).mount('#app');
+const app = createApp(App);
+
+app.use(router);
+app.use(Vuelidate);
+app.use(Vue3TouchEvents);
+
+app.mount('#app');

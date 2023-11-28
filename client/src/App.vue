@@ -1,11 +1,21 @@
 <template>
-  <div id="app">
+  <div v-touch:swipe.right="navigateBack"  id="app">
   <div class="logoBox">
         <img class="hhLogo" :src="require('./assets/hhLogo.png')" alt="logo">
       </div>
-      <router-view/>
+      <router-view />
     </div>
 </template>
+
+<script>
+export default {
+  methods: {
+    navigateBack() {
+      this.$router.go(-1);
+    },
+  },
+};
+</script>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&display=swap');

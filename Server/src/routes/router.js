@@ -1,6 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { body, param } = require('express-validator');
+const { body, param,  } = require('express-validator');
+const userValidationRules = require('./validations/regUserVal');
+const { validationResult } = require('express-validator');
+const loginValidationRules = require('./validations/loginVal')
+const updateUserRules = require('./validations/updateUserVal')
+const regFamValidationRules = require('./validations/regFamVal')
+const addToFamValidationRules = require('./validations/addUserToFamVal')
 
 
 // //User
@@ -24,109 +30,61 @@ router.get('/users', readAllUsers)
 // //User routes
 
 // register user
-router.post('/register', 
-body('userName')
-    .isLength({ min: 5 }).withMessage('Brugernavn skal være minimum 5 karaktere')
-    .custom((value) => {
-      if (!value) {
-        throw new Error('Der mangler at blive udfyldt felter');
-      }
-      if (value.includes("'") || value.includes("-")) {
-        throw new Error('Brugernavn må ikke indeholde apostrof eller bindestreg');
-      }
-      return true;
-    }),
-body('email').isEmail().withMessage('Dette er ikke en email')
-.custom((value, { req }) => {
-  if (!value) {
-    throw new Error('Der mangler at blive udfyldt felter');
+router.post('/register', userValidationRules, (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log(errors)
+    return res.status(400).json({ errors: errors.array() });
   }
-  return true;
-}),
-body('password')
-  .isLength({ min: 6 }).withMessage('Password skal være minimum 6 karaktere')
-  .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/).withMessage('Password skal indeholde minimum ét lille bogstav, ét stort bogstav, samt tal')
-  .custom((value) => {
-    if (!value) {
-      throw new Error('Der mangler at blive udfyldt felter');
-    }
-    if (value.includes("'") || value.includes("-")) {
-      throw new Error('Password må ikke indeholde apostrof eller bindestreg');
-    }
-    return true;
-  }),
-userRegisterRoute)
+  next();
+}, userRegisterRoute);
+
 
 // Login user
-router.post('/login', 
-body('email')
-.isEmail().withMessage('Dette er ikke en gyldig email')
-.custom((value) => {
-  if (!value) {
-    throw new Error('Email skal udfyldes');
+router.post('/login', loginValidationRules, (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log(errors)
+    return res.status(400).json({ errors: errors.array() });
   }
-  return true;
-}),
-body('password')
-.isLength({ min: 6 }).withMessage('Password skal være minimum 6 karakterer')
-.matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/).withMessage('Password skal indeholde mindst ét lille bogstav, ét stort bogstav og et tal')
-.custom((value) => {
-  if (!value) {
-    throw new Error('Password skal udfyldes');
-  }
-  return true;
-}),
+  next();
+}, 
 userLoginRoute)
 
 // Update user
-router.put('/updateUser',
-body('newUserName').optional().isLength({ min: 5 }).withMessage('Brugernavn skal være minimum 5 karaktere')
-.custom((value) => {
-  if (!value) {
-    throw new Error('Der mangler at blive udfyldt felter');
+router.put('/updateUser', updateUserRules,  (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log(errors)
+    return res.status(400).json({ errors: errors.array() });
   }
-  if (value.includes("'") || value.includes("-")) {
-    throw new Error('Brugernavn må ikke indeholde apostrof eller bindestreg');
-  }
-  return true;
-}),
-body('newEmail').optional().isEmail().withMessage('Ny email er ikke gyldig'),
-  body('newPassword').optional()
-  .isLength({ min: 6 }).withMessage('Nyt password skal være minimum 6 karakterer')
-  .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/).withMessage('Nyt password skal indeholde mindst ét lille bogstav, ét stort bogstav og et tal'),
-updateUser)
+  next();
+}, updateUser)
 
 // Delete user
-router.delete('/deleteUser', deleteUser)
+router.delete('/deleteUser/:id', deleteUser)
 
 // //Family Routes
 
 // Register Family
-router.post("/families/register", 
-body('familyName')
-    .isLength({ min: 1 }).withMessage('Familienavn skal være minimum 5 karaktere')
-    .custom((value) => {
-      if (value.includes("'") || value.includes("-")) {
-        throw new Error('Familienavn må ikke indeholde apostrof eller bindestreg');
-      }
-      return true;
-    }),
-createFamiliesRoute);
+router.post("/families/register", regFamValidationRules, (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log(errors)
+    return res.status(400).json({ errors: errors.array() });
+  }
+  next();
+}, createFamiliesRoute);
 
 // Add To Family
-router.post("/families/addToFamily",
-// Validate familyID in body
-body('familyName')
-.trim()
-.isLength({ min: 2 }).withMessage('FamilieName skal være minimum 2 karakterer'),
-// .matches(/family\d+/).withMessage('FamilieID skal følge formatet family[nummer]'),
-
-// Validate userID in body
-body('userID')
-.trim(),
-// .isLength({ min: 5 }).withMessage('BrugerID skal være minimum 5 karakterer')
-// .matches(/user\d+/).withMessage('BrugerID skal følge formatet user[nummer]'),
-addUserToFamilyRoute);
+router.post("/families/addToFamily",addToFamValidationRules, (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log(errors)
+    return res.status(400).json({ errors: errors.array() });
+  }
+  next();
+}, addUserToFamilyRoute);
 
 // Remove user from family
 router.post("/families/removeUserFromFamily/:familyID",

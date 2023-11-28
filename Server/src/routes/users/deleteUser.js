@@ -7,8 +7,9 @@ module.exports = async (req, res) => {
 
         console.log('Delete user route called');
         // Find user in DB and delete
-        const user = await User.findByIdAndDelete(userId);
-
+        const user = await User.findOneAndDelete({userID: userId});
+       
+        console.log(user)
         // If user does not exist
         if (!user){
             return res.status(404).json({message:"Bruger blev ikke fundet"});

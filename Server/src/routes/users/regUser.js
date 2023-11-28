@@ -8,6 +8,7 @@ const jwtSecretKey = "" + process.env.JWT_KEY;
 
 // Registre user
 module.exports = async (req, res) => {
+    // console.log(req)
 
     try {
         // Get the users data from input

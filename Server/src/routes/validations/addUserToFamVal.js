@@ -14,10 +14,10 @@ const addToFamValidationRules = [
       return true;
     }),
 
-  param("userID")
-    .trim()
-    .isLength({ min: 5 })
-    .matches(/user\d+/),
+//   param("userID")
+//     .trim()
+//     .isLength({ min: 5 })
+//     .matches(/user\d+/),
 ];
 
 module.exports = addToFamValidationRules;

@@ -88,37 +88,37 @@ router.post("/families/addToFamily",addToFamValidationRules, (req, res, next) =>
 
 // Remove user from family
 router.post("/families/removeUserFromFamily/:familyID",
-// Validate familyID in URL
-param('familyID')
-.trim()
-.isLength({ min: 5 }).withMessage('FamilieID skal være minimum 5 karakterer')
-.matches(/family\d+/).withMessage('FamilieID skal følge formatet family[nummer]'),
+// // Validate familyID in URL
+// param('familyID')
+// .trim()
+// .isLength({ min: 5 }).withMessage('FamilieID skal være minimum 5 karakterer')
+// .matches(/family\d+/).withMessage('FamilieID skal følge formatet family[nummer]'),
 
-// Validate userID in body
-body('userID')
-.trim()
-.isLength({ min: 5 }).withMessage('BrugerID skal være minimum 5 karakterer')
-.matches(/user\d+/).withMessage('BrugerID skal følge formatet user[nummer]'),
+// // Validate userID in body
+// body('userID')
+// .trim()
+// .isLength({ min: 5 }).withMessage('BrugerID skal være minimum 5 karakterer')
+// .matches(/user\d+/).withMessage('BrugerID skal følge formatet user[nummer]'),
  removeUserFromFamilyRoute);
 
 // Update family
 router.put("/families/updateFamily/:familyID", 
- // Validate familyID in URL
- param('familyID')
- .trim()
- .matches(/family\d+/).withMessage('FamilieID skal følge formatet family[nummer]'),
+//  // Validate familyID in URL
+//  param('familyID')
+//  .trim()
+//  .matches(/family\d+/).withMessage('FamilieID skal følge formatet family[nummer]'),
 
-// Validate new family name in body
-body('newFamilyName')
- .trim()
- .isLength({ min: 2 }).withMessage('Nyt familiennavn skal være minimum 2 karakterer')
- .not().isEmpty().withMessage('Nyt familiennavn kan ikke være tomt')
- .custom((value) => {
-  if (value.includes("'") || value.includes("-")) {
-    throw new Error('Det Nye familienavn må ikke indeholde apostrof eller bindestreg');
-  }
-  return true;
-}),
+// // Validate new family name in body
+// body('newFamilyName')
+//  .trim()
+//  .isLength({ min: 2 }).withMessage('Nyt familiennavn skal være minimum 2 karakterer')
+//  .not().isEmpty().withMessage('Nyt familiennavn kan ikke være tomt')
+//  .custom((value) => {
+//   if (value.includes("'") || value.includes("-")) {
+//     throw new Error('Det Nye familienavn må ikke indeholde apostrof eller bindestreg');
+//   }
+//   return true;
+// }),
 updateFamilyRoute);
 
 // Delete family

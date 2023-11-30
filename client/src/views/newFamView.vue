@@ -6,6 +6,9 @@
                 <input @focus="clearPlaceholder" @blur="event => restorePlaceholder(event, 'Tilføj Familie')" type="text"
                     id="family" v-model="familyName" placeholder="Tilføj Familie" required />
             </div>
+
+            <ErrorModal :isVisible="showErrorModal" :message="getErrorMessage" @close="closeErrorModal"></ErrorModal>
+            
             <button type="submit">Tilføj</button>
         </form>
     </section>
@@ -14,20 +17,31 @@
 <script>
 import axios from 'axios';
 import router from '@/router';
+import ErrorModal from '../components/errorModal.vue';
+import { mapActions, mapGetters } from "vuex";
 
 export default {
+    components: {
+        ErrorModal,
+    },
     data() {
         return {
             familyName: '',
             userName: '',
+            showErrorModal: false,
         };
     },
     created() {
         this.fetchUserName();
         this.fetchUserID();
     },
+    computed: {
+        ...mapGetters(['getErrorMessage']),
+    },
 
     methods: {
+        ...mapActions(['validateFamName']),
+
         clearPlaceholder(event) {
             event.target.placeholder = '';
         },
@@ -36,6 +50,12 @@ export default {
                 event.target.placeholder = 'Tilføj Familie';
             }
         },
+
+        closeErrorModal() {
+    this.showErrorModal = false;
+},
+
+
 
         fetchUserName() {
             const user = JSON.parse(localStorage.getItem('user'));
@@ -49,6 +69,13 @@ export default {
         },
 
         async addNewFam() {
+
+            const isFamnameValid = await this.validateFamName(this.familyName);
+            if (!isFamnameValid) {
+                this.showErrorModal = true;
+                return;
+            }
+
             try {
                 console.log("trigger")
                 console.log(this.familyName)

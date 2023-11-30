@@ -10,6 +10,8 @@
                     id="password" v-model="password" placeholder="Password" required />
             </div>
 
+            <ErrorModal :isVisible="showErrorModal" :message="getErrorMessage" @close="closeErrorModal"></ErrorModal>
+
             <div class="confirmBox">
                 <button class="cornfirmBtn">Login</button>
             </div>
@@ -21,16 +23,27 @@
 <script>
 import router from '../router/index'
 import axios from 'axios';
+import ErrorModal from '../components/errorModal.vue';
+import { mapActions, mapGetters } from "vuex";
 
 export default {
+    components: {
+        ErrorModal
+    },
     data() {
         return {
             email: '',
             password: '',
+            showErrorModal: false,
         };
+    },
+    computed: {
+        ...mapGetters(['getErrorMessage'])
     },
 
     methods: {
+        ...mapActions(['validateEmail', 'validatePassword']),
+
         clearPlaceholder(event) {
             event.target.placeholder = '';
         },
@@ -40,7 +53,23 @@ export default {
             }
         },
 
+        closeErrorModal() {
+            this.showErrorModal = false;
+            this.$store.commit('SET_ERROR_MESSAGE', '');
+        },
+
         async login() {
+            const isEmailValid = await this.validateEmail(this.email);
+            if (!isEmailValid) {
+                this.showErrorModal = true;
+                return;
+            }
+            const isPasswordValid = await this.validatePassword(this.password);
+            if (!isPasswordValid) {
+                this.showErrorModal = true;
+                return;
+            }
+
             try {
                 console.log("trigger")
             // virker ikke!
@@ -86,7 +115,7 @@ export default {
 }
 
 input {
-    font-family: 'Amatic SC', sans-serif;
+    /* font-family: 'Amatic SC', sans-serif; */
     width: 260px;
     height: 65px;
     background-color: #416DA1;

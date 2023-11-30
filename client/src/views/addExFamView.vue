@@ -6,6 +6,9 @@
                 <input @focus="clearPlaceholder" @blur="event => restorePlaceholder(event, 'Tilføj Familie')" type="text"
                     id="family" v-model="familyName" placeholder="Tilføj Familie" required />
             </div>
+
+            <ErrorModal :isVisible="showErrorModal" :message="errorMessage" @close="closeErrorModal"></ErrorModal>
+            
             <button type="submit">Tilføj</button>
         </form>
     </section>
@@ -14,12 +17,18 @@
 <script>
 import axios from 'axios';
 import router from '@/router';
+import ErrorModal from '../components/errorModal.vue';
 
 export default {
+    components: {
+        ErrorModal,
+    },
     data() {
         return {
             familyName: '',
             userName: '',
+            showErrorModal: false,
+            errorMessage: ''
         };
     },
     created() {
@@ -35,6 +44,11 @@ export default {
             if (event.target.value === '') {
                 event.target.placeholder = 'Tilføj Familie';
             }
+        },
+
+        closeErrorModal() {
+            this.showErrorModal = false;
+            this.$store.commit('SET_ERROR_MESSAGE', '');
         },
 
         fetchUserName() {
@@ -68,7 +82,8 @@ export default {
                 await router.push("/bekraeft-bruger");
 
             } catch (error) {
-                console.error('Fejl ved tilføjelse af familie:', error);
+                this.errorMessage = "Familie findes ikke";
+                this.showErrorModal = true;
             }
 
 

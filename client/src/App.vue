@@ -41,8 +41,8 @@ export default {
 }
 
 .hhLogo {
-    Width: 190px;
-    Height: 170px;
+    Width: 150px;
+    Height: 130px;
     margin-top: 30px;
   }
   

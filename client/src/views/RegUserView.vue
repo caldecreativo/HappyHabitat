@@ -2,26 +2,41 @@
     <section>
         <form @submit.prevent="signUp" class="formView" action="">
             <div>
+                <font-awesome-icon icon="circle-info" style="color: #ffffff;" @click="openInfoModal('username')" />
                 <input @focus="clearPlaceholder($event)" @blur="restorePlaceholder($event, 'Brugernavn')" type="text"
                     id="username" v-model="user.userName" placeholder="Brugernavn" required />
 
             </div>
+            <infoModal :isVisible="showInfoModal === 'username'" @close="showInfoModal = null">
+                <h1>Brugernavn kræver:</h1>
+                <p>Minimum 5 karaktere</p>
+                <p>Ingen apostrof, mellemrum eller bindestreg</p>
+            </infoModal>
             <div>
-                <input @focus="clearPlaceholder($event)" @blur="restorePlaceholder($event, 'email')" type="text" id="email"
-                    v-model="user.email" placeholder="Email" required />
+
+                <input @focus="clearPlaceholder($event)" @blur="restorePlaceholder($event, 'johndoe@eksempel.dk')" type="text" id="email"
+                    v-model="user.email" placeholder="johndoe@eksempel.dk" required />
             </div>
             <div>
+                <font-awesome-icon icon="circle-info" style="color: #ffffff;" @click="openInfoModal('password')" />
                 <input @focus="clearPlaceholder($event)" @blur="restorePlaceholder($event, 'password')" type="text"
                     id="password" v-model="user.password" placeholder="Password" required />
             </div>
+            <infoModal :isVisible="showInfoModal === 'password'" @close="showInfoModal = null">
+                <h1>Password kræver:</h1>
+                <p>Minimum 8 karaktere</p>
+                <p>Mindst ét lille bogstav, ét stort bogstav, ét tal og ét specialtegn.</p>
+                <p>Ingen apostrof eller bindestreg</p>
+
+            </infoModal>
             <div>
+
                 <input @focus="clearPlaceholder($event)" @blur="restorePlaceholder($event, 'Bekræft password')" type="text"
                     id="confirmPass" v-model="user.confirmPass" placeholder="Bekræft password" required />
             </div>
 
-            <div v-if="errorMessage" class="error-message">
-                {{ errorMessage }}
-            </div>
+            <ErrorModal :isVisible="showErrorModal" :message="getErrorMessage" @close="closeErrorModal"></ErrorModal>
+
 
 
             <button type="submit" class="cornfirmBtn">Bekræft</button>
@@ -32,11 +47,19 @@
 <script>
 import router from "../router/index";
 import axios from 'axios';
+import ErrorModal from '../components/errorModal.vue';
+import infoModal from '../components/infoModal.vue'
+import { mapActions, mapGetters } from "vuex";
 
 
+import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 
 
 export default {
+    components: {
+        infoModal,
+        ErrorModal
+    },
     data() {
         return {
             user: {
@@ -45,14 +68,22 @@ export default {
                 password: '',
                 confirmPass: '',
             },
-            errorMessage: '',
+            showInfoModal: null,
+            showErrorModal: false,
             statusMsg: '',
 
         };
 
 
     },
+    computed: {
+        appIcon() {
+            return faCircleInfo
+        },
+        ...mapGetters(['getErrorMessage']),
+    },
     methods: {
+        ...mapActions(['validateUsername', 'validateEmail', 'validatePassword']),
 
         clearPlaceholder(event) {
             event.target.placeholder = '';
@@ -64,30 +95,37 @@ export default {
             }
         },
 
-        validateUsername() {
-            const regex = /^(?=.*[A-Z])(?=.*[a-z])(?!.*['\s-])/;
-            if (!this.user.userName) {
-                this.errorMessage = 'Brugernavn er påkrævet.';
-                return false;
-            } else if (this.user.userName.length < 5) {
-                this.errorMessage = 'Brugernavn skal være minimum 5 karaktere';
-                return false;
-            } else if (!regex.test(this.user.userName)) {
-                this.errorMessage = 'Brugernavn skal indeholde ét stort bogstav, ét lille bogstav og må ikke indeholde apostrof, bindestreg eller mellemrum';
-                return false;
-            }
-            return true;
+        // Info modal
+        openInfoModal(field) {
+            this.showInfoModal = field;
+        },
+
+        closeErrorModal() {
+            this.showErrorModal = false;
+            this.$store.commit('SET_ERROR_MESSAGE', '');
         },
 
 
 
-        async signUp() {
-            this.errorMessage = '';
 
-            const isUsernameValid = this.validateUsername();
+        async signUp() {
+
+            const isUsernameValid = await this.validateUsername(this.user.userName);
             if (!isUsernameValid) {
+                this.showErrorModal = true;
                 return;
             }
+            const isEmailValid = await this.validateEmail(this.user.email);
+            if (!isEmailValid) {
+                this.showErrorModal = true;
+                return;
+            }
+            const isPasswordValid = await this.validatePassword(this.user.password);
+            if (!isPasswordValid) {
+                this.showErrorModal = true;
+                return;
+            }
+
 
             // Check if passwords are the same
             if (this.user.password !== this.user.confirmPass) {
@@ -111,7 +149,6 @@ export default {
                     localStorage.setItem('token', response.data.userToken);
                 }
                 // 
-                this.errorMessage = '';
                 // Redirect to addFam
                 await router.push("/vaelg-familie");
 
@@ -120,7 +157,9 @@ export default {
                 console.log("fail")
                 console.log(this.user)
                 console.log(err)
-                this.errorMessage = err.message || "En fejl opstod under tilmelding";
+                const errorMessage = "Der opstod fejl under registrering, prøv igen";
+                this.$store.commit('SET_ERROR_MESSAGE', errorMessage);
+                this.showErrorModal = true;
             }
         }
 

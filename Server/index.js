@@ -4,15 +4,24 @@ const router = require('./src/routes/router')
 const dotenv = require('dotenv')
 const cors = require('cors')
 const helmet = require('helmet')
+const cookieParser = require('cookie-parser');
 
 dotenv.config()
 
 const app = express()
 
+app.use(cookieParser());
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Credentials', true);
+  next();
+})
+
 app.use(express.json());
 
 app.use(cors({
-    origin: "*"
+  credentials: true,
+    origin:["http://localhost:8081", "http://localhost:8080" ]
 }))
 
 app.use(router)

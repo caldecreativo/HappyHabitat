@@ -52,7 +52,7 @@ router.post('/login', loginValidationRules, (req, res, next) => {
 userLoginRoute)
 
 // Update user
-router.put('/updateUser', updateUserRules,  (req, res, next) => {
+router.put('/updateUser', userIsAuth, updateUserRules,  (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors)
@@ -67,7 +67,7 @@ router.delete('/deleteUser/:id', deleteUser)
 // //Family Routes
 
 // Register Family
-router.post("/families/register", regFamValidationRules, (req, res, next) => {
+router.post("/families/register", userIsAuth, regFamValidationRules, (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors)
@@ -77,7 +77,7 @@ router.post("/families/register", regFamValidationRules, (req, res, next) => {
 }, createFamiliesRoute);
 
 // Add To Family
-router.post("/families/addToFamily",addToFamValidationRules, (req, res, next) => {
+router.post("/families/addToFamily", userIsAuth, addToFamValidationRules, (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors)

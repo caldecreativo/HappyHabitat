@@ -2,7 +2,7 @@ const FamilyModel = require('../../models/FamilyModel');
 const UserModel = require('../../models/UserModel');
 
 module.exports = async(req, res) => {
-
+    console.log(req.cookies.JWT)
     try {
         // Get family data from request
         console.log(req)

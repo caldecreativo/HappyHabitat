@@ -48,7 +48,7 @@ module.exports = async (req, res) => {
 
         // Generate JWT token
         const token = jwt.sign(
-            { userID: penguinUser.userID, email: penguinUser.email },
+            { userName: penguinUser.userName, userID: penguinUser.userID, email: penguinUser.email },
             jwtSecretKey,
             { expiresIn: "1h" }
         );
@@ -57,8 +57,16 @@ module.exports = async (req, res) => {
 
             penguinUser.save();
 
+            res.cookie('JWT', token, {
+                httpOnly: true,
+                sameSite: 'none',
+                maxAge: 1 * 60 *60 * 1000,
+            })
+            
+            
 
-        res.status(201).json(penguinUser);;
+
+        res.status(201).json(penguinUser);
     } catch (error) {
         console.log(error);
     }

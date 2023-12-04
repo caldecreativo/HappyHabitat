@@ -15,15 +15,23 @@ module.exports = async (req, res) => {
 
         // If user exists and password is correct
         if(penguinUser && (await bcrypt.compare(password, penguinUser.password))) {
+        
             // Create token for authentication
             const userToken = jwt.sign(
-                { userID: penguinUser.userID, email: penguinUser.email },
+                { userName: penguinUser.userName, userID: penguinUser.userID, email: penguinUser.email },
                 jwtSecretKey,
                 { expiresIn: "1h" }
             );
 
             // Attach token to user object
             penguinUser.userToken = userToken;
+
+
+            res.cookie('JWT', userToken, {
+                httpOnly: true,
+                sameSite: 'none',
+                maxAge: 1 * 60 *60 * 1000,
+            })
 
             // Respond with user and token
             return res.status(200).json(penguinUser);

@@ -8,6 +8,10 @@ module.exports = async(req, res) => {
         console.log(req)
         const { familyName, userID } = req.body;
 
+        if (!userID) {
+            return res.status(400).send("Ugyldigt bruger-ID");
+        }
+
         // Finds last object in the Family collection
         let lastFamilyObj = await FamilyModel.findOne().sort({_id: -1});
         let familyIdFromDB;

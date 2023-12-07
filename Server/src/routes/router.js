@@ -16,6 +16,8 @@ const userIsAuth = require('./users/authenticated') //to authenticate, that user
 const updateUser = require('./users/updateUser')
 const deleteUser = require('./users/deleteUser')
 
+const userIdRoute = require('./users/getUserID')
+
 
 // // Family 
 const createFamiliesRoute = require("./families/regFam");
@@ -88,41 +90,17 @@ router.post("/families/addToFamily", userIsAuth, addToFamValidationRules, (req, 
 
 // Remove user from family
 router.post("/families/removeUserFromFamily/:familyID",
-// // Validate familyID in URL
-// param('familyID')
-// .trim()
-// .isLength({ min: 5 }).withMessage('FamilieID skal være minimum 5 karakterer')
-// .matches(/family\d+/).withMessage('FamilieID skal følge formatet family[nummer]'),
 
-// // Validate userID in body
-// body('userID')
-// .trim()
-// .isLength({ min: 5 }).withMessage('BrugerID skal være minimum 5 karakterer')
-// .matches(/user\d+/).withMessage('BrugerID skal følge formatet user[nummer]'),
  removeUserFromFamilyRoute);
 
 // Update family
 router.put("/families/updateFamily/:familyID", 
-//  // Validate familyID in URL
-//  param('familyID')
-//  .trim()
-//  .matches(/family\d+/).withMessage('FamilieID skal følge formatet family[nummer]'),
 
-// // Validate new family name in body
-// body('newFamilyName')
-//  .trim()
-//  .isLength({ min: 2 }).withMessage('Nyt familiennavn skal være minimum 2 karakterer')
-//  .not().isEmpty().withMessage('Nyt familiennavn kan ikke være tomt')
-//  .custom((value) => {
-//   if (value.includes("'") || value.includes("-")) {
-//     throw new Error('Det Nye familienavn må ikke indeholde apostrof eller bindestreg');
-//   }
-//   return true;
-// }),
 updateFamilyRoute);
 
 // Delete family
 router.delete("/families/deleteFamily/:familyID",deleteFamilyRoute);
+
 
 
 module.exports = router;

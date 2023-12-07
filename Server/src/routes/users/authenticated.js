@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 
-const jwtSecretKey = "" + process.env.JWT_KEY;
+const jwtSecretKey = "" + process.env.JWT_SECRET_KEY;
 
 module.exports = async (req, res, next) => {
     let userToken = req.cookies.JWT;
@@ -14,9 +14,10 @@ module.exports = async (req, res, next) => {
                 return res.sendStatus(403)
             }
             console.log(decoded)
-            req.newUser = {
+            req.userInfo = {
                 userName: decoded.userName,
                 email: decoded.email,
+                
             }
             next();
         });
@@ -24,3 +25,4 @@ module.exports = async (req, res, next) => {
         return res.status(401).send("Token ikke korrekt")
     }
 }
+

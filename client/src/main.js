@@ -7,10 +7,13 @@ import Vue3TouchEvents from "vue3-touch-events";
 import { library } from '@fortawesome/fontawesome-svg-core'
 /* import font awesome icon component */
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
+import { faCircleInfo, faAngleUp, faCircleQuestion, faXmark } from '@fortawesome/free-solid-svg-icons';
 import valStore from './store/valStore'
+import axios from 'axios';
 
-library.add(faCircleInfo);
+axios.defaults.withCredentials = true;
+
+library.add(faCircleInfo, faAngleUp, faCircleQuestion, faXmark);
 
 const app = createApp(App);
 

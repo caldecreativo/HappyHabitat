@@ -1,8 +1,10 @@
 <template>
     <section>
+        <h2 class="regH2">Registrer bruger</h2>
         <form @submit.prevent="signUp" class="formView" action="">
-            <div>
-                <font-awesome-icon icon="circle-info" style="color: #ffffff;" @click="openInfoModal('username')" />
+            <div class="iconWrap">
+                <font-awesome-icon class="circleIcon" icon="circle-info" style="color: #ffffff;"
+                    @click="openInfoModal('username')" />
                 <input @focus="clearPlaceholder($event)" @blur="restorePlaceholder($event, 'Brugernavn')" type="text"
                     id="username" v-model="user.userName" placeholder="Brugernavn" required />
 
@@ -14,11 +16,12 @@
             </infoModal>
             <div>
 
-                <input @focus="clearPlaceholder($event)" @blur="restorePlaceholder($event, 'johndoe@eksempel.dk')" type="text" id="email"
-                    v-model="user.email" placeholder="johndoe@eksempel.dk" required />
+                <input @focus="clearPlaceholder($event)" @blur="restorePlaceholder($event, 'johndoe@eksempel.dk')"
+                    type="text" id="email" v-model="user.email" placeholder="johndoe@eksempel.dk" required />
             </div>
-            <div>
-                <font-awesome-icon icon="circle-info" style="color: #ffffff;" @click="openInfoModal('password')" />
+            <div class="iconWrap">
+                <font-awesome-icon class="circleIcon" icon="circle-info" style="color: #ffffff;"
+                    @click="openInfoModal('password')" />
                 <input @focus="clearPlaceholder($event)" @blur="restorePlaceholder($event, 'password')" type="text"
                     id="password" v-model="user.password" placeholder="Password" required />
             </div>
@@ -102,7 +105,7 @@ export default {
 
         closeErrorModal() {
             this.showErrorModal = false;
-            this.$store.commit('SET_ERROR_MESSAGE', '');
+            this.$store.commit('ERROR_MESSAGE', '');
         },
 
 
@@ -141,14 +144,15 @@ export default {
                 // Log hele responsobjektet for at se, hvad du modtager
                 console.log('Server response:', response.data);
 
+                const userForStorage = {
+                    userName: this.user.userName, // Gemmer kun brugernavn
+                    userID: response.data.userID  // Gemmer kun userID
+                };
 
-                // Save user & token in localStorage
-                localStorage.setItem('user', JSON.stringify(response.data));
+                // Gem det nye objekt i localStorage
+                localStorage.setItem('userForStorage', JSON.stringify(userForStorage));
 
-                if (response.data.userToken) {
-                    localStorage.setItem('token', response.data.userToken);
-                }
-                // 
+
                 // Redirect to addFam
                 await router.push("/vaelg-familie");
 
@@ -158,7 +162,7 @@ export default {
                 console.log(this.user)
                 console.log(err)
                 const errorMessage = "Der opstod fejl under registrering, prøv igen";
-                this.$store.commit('SET_ERROR_MESSAGE', errorMessage);
+                this.$store.commit('ERROR_MESSAGE', errorMessage);
                 this.showErrorModal = true;
             }
         }
@@ -172,44 +176,70 @@ export default {
 
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
+
+.regH2 {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: bold;
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    color: white;
+    margin-top: 50px;
+    margin-bottom: 50px;
+
+}
+
 .formView {
 
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 30px;
+    gap: 42px;
     margin-top: 30px;
 }
 
 input {
-    /* font-family: 'Amatic SC', sans-serif; */
-    width: 200px;
-    height: 50px;
-    background-color: #416DA1;
+    font-family: 'Quicksand', sans-serif;
+    width: 270px;
+    height: 46px;
+    background-color: white;
     border: none;
-    border-radius: 10px;
-    color: white;
-    font-size: 30px;
+    border-radius: 15px;
+    font-size: 20px;
     text-align: center;
 
 }
 
 input::placeholder {
-    color: white;
-    opacity: 1;
-    /* Fjerner gennemsigtighed */
+    color: rgba(13, 30, 61, 0.7);
+}
+
+.iconWrap {
+    margin-right: 40px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
 }
 
 .cornfirmBtn {
-    font-family: 'Amatic SC', sans-serif;
-    width: 80px;
-    height: 40px;
-    font-size: 30px;
-    background-color: #DC582D;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: bold;
+    width: 126px;
+    height: 46px;
+    font-size: 20px;
+    background-color: #37B0B0;
     color: white;
     border: none;
     border-radius: 10px;
+    margin-top: 20px;
+    margin-bottom: 50px;
 
+}
+
+.circleIcon {
+    font-size: 30px;
 }
 </style>

@@ -1,15 +1,26 @@
 <template>
     <section class="chooseFamView">
-        <h1> {{  userName }}</h1>
+        <logo></logo>
+        <!-- <h1> {{  userName }}</h1> -->
         <div class="btnBox">
-        <router-link to="/ny-familie"><button class="frontBtn">Lav ny familie</button></router-link>
-        <router-link to="/tilfoj-eksisterende-familie"><button class="frontBtn">Tilføj eksisterende familie</button></router-link>
+        <div class="familyBox">
+            <h1>Tilføj ny familie</h1>
+            <router-link to="/ny-familie"><button class="frontBtn">Tilføj familie</button></router-link>
+        </div>
+        <div class="familyBox">
+            <h1>Tilslut til familie</h1>
+            <router-link to="/tilfoj-eksisterende-familie"><button class="addToBtn">Tilslut familie</button></router-link>
+        </div>
       </div>
     </section>
 </template>
 
 <script>
+import logo from '../components/logoComp.vue'
 export default {
+    components: {
+        logo,
+    },
     data() {
         return {
             userName: '',
@@ -32,25 +43,45 @@ export default {
 </script>
 
 <style>
+h1 {
+    margin: 0;
+    font-size: 30px;
+    display: flex;
+  justify-content: center;
+  color: white;
+}
+
  .btnBox {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 50px;
+    gap: 70px;
     margin-top: 40px;
   }
 
-  .frontBtn {
-    font-family: 'Amatic SC', sans-serif;
-    width: 260px;
-    height: 65px;
-    background-color: #416DA1;
-    border: none;
-    border-radius: 10px;
-    color: white;
-    font-size: 55px;
+  .familyBox {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
     
+  }
+
+  .frontBtn, .addToBtn {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: bold;
+    width: 235px;
+    height: 46px;
+    background-color: #37B0B0;
+    border: none;
+    border-radius: 15px;
+    color: white;
+    font-size: 20px;
+    
+  }
+
+  .addToBtn {
+    margin-bottom: 50px;
   }
 
 </style>

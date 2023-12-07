@@ -1,15 +1,27 @@
 <template>
     <section class="addExFamView">
-        <h1> {{ userName }}</h1>
-        <form @submit.prevent="addExFam">
+        <logo></logo>
+        <div class="iconWrap">
+            <font-awesome-icon class="circleIcon" icon="circle-info" style="color: #ffffff;" @click="openInfoModal('family')" />
+            <h1>Tilslut til familie</h1>
+        </div>
+        <form class="formView" @submit.prevent="addExFam">
             <div>
                 <input @focus="clearPlaceholder" @blur="event => restorePlaceholder(event, 'Tilføj Familie')" type="text"
                     id="family" v-model="familyName" placeholder="Tilføj Familie" required />
             </div>
 
-            <ErrorModal :isVisible="showErrorModal" :message="errorMessage" @close="closeErrorModal"></ErrorModal>
+            <infoModal :isVisible="showInfoModal === 'family'" @close="showInfoModal = null">
+                <h1>Familienavn kræver:</h1>
+                <p>Minimum 5 karaktere</p>
+                <p>Ingen apostrof, mellemrum eller bindestreg</p>
+            </infoModal>
+
+            <h2>Bliv en del af eventyret!</h2>
+
+            <ErrorModal :isVisible="showErrorModal" :message="getErrorMessage" @close="closeErrorModal"></ErrorModal>
             
-            <button type="submit">Tilføj</button>
+            <button class="cornfirmBtn" type="submit">Tilføj</button>
         </form>
     </section>
 </template>
@@ -17,18 +29,24 @@
 <script>
 import axios from 'axios';
 import router from '@/router';
+import { mapActions, mapGetters } from "vuex";
+import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import ErrorModal from '../components/errorModal.vue';
+import logo from '../components/logoComp.vue'
+import infoModal from '../components/infoModal.vue'
 
 export default {
     components: {
+        logo,
+        infoModal,
         ErrorModal,
     },
     data() {
         return {
             familyName: '',
             userName: '',
+            showInfoModal: null,
             showErrorModal: false,
-            errorMessage: ''
         };
     },
     created() {
@@ -36,7 +54,23 @@ export default {
         this.fetchUserID();
     },
 
+    computed: {
+        appIcon() {
+            return faCircleInfo
+        },
+
+        ...mapGetters(['getErrorMessage']),
+    },
+
     methods: {
+        ...mapActions(['validateFamName']),
+
+// Info modal
+openInfoModal(field) {
+this.showInfoModal = field;
+},
+
+
         clearPlaceholder(event) {
             event.target.placeholder = '';
         },
@@ -48,7 +82,7 @@ export default {
 
         closeErrorModal() {
             this.showErrorModal = false;
-            this.$store.commit('SET_ERROR_MESSAGE', '');
+            this.$store.commit('ERROR_MESSAGE', '');
         },
 
         fetchUserName() {
@@ -63,6 +97,13 @@ export default {
         },
 
         async addExFam() {
+            const isFamnameValid = await this.validateFamName(this.familyName);
+            if (!isFamnameValid) {
+                this.showErrorModal = true;
+                return;
+            }
+
+
             try {
                 console.log("trigger")
                 console.log(this.familyName)
@@ -82,8 +123,10 @@ export default {
                 await router.push("/bekraeft-bruger");
 
             } catch (error) {
-                this.errorMessage = "Familie findes ikke";
+                const errorMessage = "Familie findes ikke";
+                this.$store.commit('ERROR_MESSAGE', errorMessage);
                 this.showErrorModal = true;
+
             }
 
 
@@ -96,4 +139,65 @@ export default {
 }
 </script>
 
-<style></style>
+<style scoped>
+.hhLogo {
+    margin-bottom: 50px;
+}
+
+input {
+    font-family: 'Quicksand', sans-serif;
+    width: 235px;
+    height: 46px;
+    background-color: white;
+    border: none;
+    border-radius: 15px;
+    font-size: 20px;
+    text-align: center;
+}
+
+h2 {
+    text-align: center;
+    color: white;
+    margin-top: 50px;
+}
+
+.cornfirmBtn {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: bold;
+    width: 126px;
+    height: 46px;
+    font-size: 20px;
+    background-color: #37B0B0;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    margin-top: 20px;
+    margin-bottom: 50px;
+
+}
+
+.formView {
+
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+gap: 50px;
+margin-top: 30px;
+}
+
+.iconWrap{
+    margin-top: 20px;
+    margin-left: 35px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+
+}
+
+.circleIcon{
+    font-size: 30px;
+}
+
+</style>

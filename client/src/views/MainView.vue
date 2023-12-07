@@ -1,52 +1,90 @@
 <template>
     <section class="logView">
-      <div class="btnBox">
-        <router-link to="/login"><button class="frontBtn">Login</button></router-link>
-        <router-link to="/register"><button class="frontBtn">Registrer</button></router-link>
+      <logo></logo>
+      <div class="frontBox">
+        <router-link to="/login"><button class="loginBtn">Login</button></router-link>
+        <router-link to="/register"><button class="regBtn">Registrer</button></router-link>
       </div>
       <div class="pLogin">
         <p>Glemt login?</p>
-        <p>Login med Google</p>
+      </div>
+      <div class="socialBox">
+        <button class="fbBtn">Login med facebook</button>
+      <button class="goBtn">Login med Google</button>
+
       </div>
     </section>
   </template>
+
+  <script>
+  import logo from '../components/logoComp.vue';
+export default {
+  components: {
+    logo,
+  },
+}
+
+</script>
     
   <style scoped>
-  @import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
   
   
-  
-  .btnBox {
+  .frontBox {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 50px;
-    margin-top: 40px;
+    margin-top: 50px;
   }
+
+  .socialBox {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    margin-top: 40px;
+    margin-bottom: 50px;
+  }
+
+
   
-  .frontBtn {
-    font-family: 'Amatic SC', sans-serif;
-    width: 260px;
-    height: 65px;
-    background-color: #416DA1;
+  .loginBtn, .regBtn   {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: bold;
+    width: 270px;
+    height: 46px;
+    background-color: #37B0B0;
+    border: none;
+    border-radius: 15px;
+    color: white;
+    font-size: 20px;
+  }
+
+  .fbBtn, .goBtn {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: bold;
+    width: 270px;
+    height: 46px;
+    background-color: #ffffff;
+    color: #324576;
     border: none;
     border-radius: 10px;
-    color: white;
-    font-size: 55px;
-    
+    font-size: 20px;
   }
   
   .pLogin {
-    font-family: 'Amatic SC', sans-serif;
-    font-size: 24px;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: regular;
+    font-size: 12px;
     display: flex;
-    flex-direction: row;
-    justify-content: space-around;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     color: white;
-    margin-top: 70px;
-    margin-left: 30px;
-    margin-right: 30px;
+    margin-top: 33px;
   }
   
   p {

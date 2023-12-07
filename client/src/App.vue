@@ -1,10 +1,7 @@
 <template>
-  <div v-touch:swipe.right="navigateBack"  id="app">
-  <div class="logoBox">
-        <img class="hhLogo" :src="require('./assets/hhLogo.png')" alt="logo">
-      </div>
-      <router-view />
-    </div>
+  <div v-touch:swipe.right="navigateBack" id="app">
+    <router-view />
+  </div>
 </template>
 
 <script>
@@ -17,42 +14,34 @@ export default {
 };
 </script>
 
-<style>
+<style >
 @import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&display=swap');
 
 @media screen and (min-width: 600px) {
   body {
+    font-family: 'Quicksand', sans-serif;
     margin-top: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
+    max-width: 100%;
+    overflow-x: hidden;
+
   }
 
   #app {
-    position: relative;
     width: 375px;
-    height: 667px;
+    max-width: 100vw;
+    max-height: 667px;
     border: 1px solid black;
     border-radius: 20px;
-    background-image: url('./assets/backLp.png');
+    background: linear-gradient(to bottom, #0C1D3B, #3A4D82);
+    overflow-y: auto;
   }
+
 
 
 }
-
-.hhLogo {
-    Width: 150px;
-    Height: 130px;
-    margin-top: 30px;
-  }
-  
-  .logoBox{
-    
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
 
 
 </style>

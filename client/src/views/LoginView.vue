@@ -1,5 +1,6 @@
 <template>
     <section class="loginView">
+        <logo></logo>
         <form class="formView" @submit.prevent="login">
             <div>
                 <input @focus="clearPlaceholder" @blur="event => restorePlaceholder(event, 'email')" type="text" id="email"
@@ -9,6 +10,10 @@
                 <input @focus="clearPlaceholder" @blur="event => restorePlaceholder(event, 'Password')" type="text"
                     id="password" v-model="password" placeholder="Password" required />
             </div>
+
+            <div class="pLogin">
+        <p>Glemt login?</p>
+      </div>
 
             <ErrorModal :isVisible="showErrorModal" :message="getErrorMessage" @close="closeErrorModal"></ErrorModal>
 
@@ -21,6 +26,7 @@
     
 
 <script>
+  import logo from '../components/logoComp.vue';
 import router from '../router/index'
 import axios from 'axios';
 import ErrorModal from '../components/errorModal.vue';
@@ -28,6 +34,7 @@ import { mapActions, mapGetters } from "vuex";
 
 export default {
     components: {
+        logo,
         ErrorModal
     },
     data() {
@@ -55,7 +62,7 @@ export default {
 
         closeErrorModal() {
             this.showErrorModal = false;
-            this.$store.commit('SET_ERROR_MESSAGE', '');
+            this.$store.commit('ERROR_MESSAGE', '');
         },
 
         async login() {
@@ -75,16 +82,17 @@ export default {
             // virker ikke!
             const response =await axios.post('http://localhost:8081/login', {
                 email: this.email,
-                password: this.password
+                password: this.password,
+                
             })
+            console.log('Server response:', response);
             
+            // // Save user & token in localStorage
+            // localStorage.setItem('user', JSON.stringify(response.data));
             
-            // Save user & token in localStorage
-            localStorage.setItem('user', JSON.stringify(response.data));
-            
-            if (response.data.userToken) {
-                localStorage.setItem('token', response.data.userToken);
-            }
+            // if (response.data.userToken) {
+            //     localStorage.setItem('token', response.data.userToken);
+            // }
 
             await router.push("/rediger-bruger");
 
@@ -104,6 +112,7 @@ export default {
 
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
 .formView {
 
     display: flex;
@@ -111,39 +120,55 @@ export default {
     justify-content: center;
     align-items: center;
     gap: 50px;
-    margin-top: 40px;
+    margin-top: 50px;
 }
 
 input {
-    /* font-family: 'Amatic SC', sans-serif; */
-    width: 260px;
-    height: 65px;
-    background-color: #416DA1;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: bold;
+    width: 270px;
+    height: 46px;
+    background-color: white;
     border: none;
-    border-radius: 10px;
-    color: white;
-    font-size: 55px;
+    border-radius: 15px;
+    font-size: 20px;
     text-align: center;
-
 }
 
 input::placeholder {
-    color: white;
-    opacity: 1;
-    /* Fjerner gennemsigtighed */
+    color: rgba(13, 30, 61, 0.7);
+    
+    
 }
+
+p {
+    margin: 0;
+}
+
+.pLogin {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: regular;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+  }
 
 
 .cornfirmBtn {
-    font-family: 'Amatic SC', sans-serif;
-    width: 130px;
-    height: 70px;
-    font-size: 55px;
-    background-color: #DC582D;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: bold;
+    width: 126px;
+    height: 46px;
+    font-size: 20px;
+    background-color: #37B0B0;
     color: white;
     border: none;
     border-radius: 10px;
-    margin-top: 20px;
+    margin-bottom: 50px;
+
 
 }
 
@@ -152,6 +177,6 @@ input::placeholder {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 50px;
+    
 }
 </style>

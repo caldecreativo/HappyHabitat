@@ -23,6 +23,11 @@
   </script>
   
   <style>
+  @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
+body{
+    font-family: 'Quicksand', sans-serif;
+}
+
 .modal-overlay {
   position: absolute; /* Ændret til absolute for at være i forhold til #app */
   top: 0;
@@ -38,13 +43,16 @@
 }
 
 .modal-content {
-  width: 90%; /* Tilpasset bredde til mobilvisning */
+  width: auto; /* Tilpasset bredde til mobilvisning */
   max-width: 300px; /* Maksimal bredde baseret på #app bredde */
+  margin: auto;
   padding: 20px;
   background-color: white;
   border-radius: 20px; /* Tilpasset til #app's border-radius */
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
   z-index: 1001; /* Sørger for at modalen ligger over overlayet */
+  background: linear-gradient(to bottom, #0C1D3B, #3A4D82);
+  color: white;
 
 }
   </style>

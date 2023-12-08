@@ -17,6 +17,7 @@ const updateUser = require('./users/updateUser')
 const deleteUser = require('./users/deleteUser')
 
 const userIdRoute = require('./users/getUserID')
+const getCookie = require('./users/getCookieInfo')
 
 
 // // Family 
@@ -78,6 +79,8 @@ router.post("/families/register", userIsAuth, regFamValidationRules, (req, res, 
   next();
 }, createFamiliesRoute);
 
+router.get("/families/register/:id", userIdRoute );
+
 // Add To Family
 router.post("/families/addToFamily", userIsAuth, addToFamValidationRules, (req, res, next) => {
   const errors = validationResult(req);
@@ -101,6 +104,6 @@ updateFamilyRoute);
 // Delete family
 router.delete("/families/deleteFamily/:familyID",deleteFamilyRoute);
 
-
+router.get("/getCookie", getCookie)
 
 module.exports = router;

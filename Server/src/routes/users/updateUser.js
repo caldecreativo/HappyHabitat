@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 const jwtSecretKey = "" + process.env.JWT_KEY;
 
 module.exports = async (req, res) => {
-  const correntUser = req.userInfo;
+  const correntUser = req.userData;
   console.log(correntUser);
 
   try {

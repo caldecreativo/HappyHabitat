@@ -14,12 +14,13 @@ module.exports = async (req, res, next) => {
                 return res.sendStatus(403)
             }
             console.log(decoded)
-            req.userData = {
+            userData = {
+                userID: decoded.userID,
                 userName: decoded.userName,
                 email: decoded.email,
                 
             }
-            next();
+            res.json(userData);
         });
     } catch (error) {
         return res.status(401).send("Token ikke korrekt")

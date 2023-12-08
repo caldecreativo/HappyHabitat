@@ -6,7 +6,8 @@
         <router-link to="/register"><button class="regBtn">Registrer</button></router-link>
       </div>
       <div class="pLogin">
-        <p>Glemt login?</p>
+        <!-- <p>Glemt login?</p> -->
+        <install-pwa></install-pwa>
       </div>
       <div class="socialBox">
         <button class="fbBtn">Login med facebook</button>
@@ -17,10 +18,13 @@
   </template>
 
   <script>
+import InstallPwa from '../components/installPWA.vue';
   import logo from '../components/logoComp.vue';
+  
 export default {
   components: {
     logo,
+    InstallPwa,
   },
 }
 
@@ -87,22 +91,6 @@ export default {
     margin-top: 33px;
   }
   
-  p {
-    margin: 0;
-  }
-  
-  
-  nav {
-    padding: 30px;
-  }
-  
-  nav a {
-    font-weight: bold;
-    color: #2c3e50;
-  }
-  
-  nav a.router-link-exact-active {
-    color: #42b983;
-  }
+ 
   </style>
   

@@ -33,8 +33,10 @@ export default {
 
     methods: {
         fetchUserName() {
-            const user = JSON.parse(localStorage.getItem('user'));
-            this.userName = user ? user.userName : '';
+            const userName = localStorage.getItem('userName');
+            if (userName) {
+                this.userName = userName;
+            }
         },
         fetchFamilyName() {
             const familyName = localStorage.getItem('familyName');

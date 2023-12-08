@@ -144,17 +144,15 @@ export default {
                 // Log hele responsobjektet for at se, hvad du modtager
                 console.log('Server response:', response.data);
 
-                const userForStorage = {
-                    userName: this.user.userName, // Gemmer kun brugernavn
-                    userID: response.data.userID  // Gemmer kun userID
-                };
-
-                // Gem det nye objekt i localStorage
-                localStorage.setItem('userForStorage', JSON.stringify(userForStorage));
+         
+                // Save username to localstorage
+                localStorage.setItem('userName', this.user.userName);
+                
 
 
                 // Redirect to addFam
                 await router.push("/vaelg-familie");
+                
 
 
             } catch (err) {

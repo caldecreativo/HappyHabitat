@@ -47,6 +47,7 @@ export default {
             userName: '',
             showInfoModal: null,
             showErrorModal: false,
+            userID: null,
         };
     },
     created() {
@@ -90,10 +91,17 @@ this.showInfoModal = field;
             this.userName = user ? user.userName : '';
         },
 
-        fetchUserID() {
-            console.log("trig")
-            const user = JSON.parse(localStorage.getItem('user'));
-            this.userID = user ? user.userID : '';
+        async fetchUserID() {
+            try {
+                const response = await axios.get('http://localhost:8081/getCookie', {
+                    withCredentials: true
+                })
+                console.log(response.data)
+                this.userID = response.data.userID
+                console.log(this.userID)
+            } catch(err) {
+                console.error(err)
+            }
         },
 
         async addExFam() {

@@ -48,6 +48,7 @@ export default {
             userName: '',
             showInfoModal: null,
             showErrorModal: false,
+            userID: null,
             
         };
     },
@@ -92,25 +93,27 @@ export default {
             this.userName = user ? user.userName : '';
         },
 
-        fetchUserID() {
-            console.log("trig")
-            const user = JSON.parse(localStorage.getItem('user'));
-            this.userID = user ? user.userID : '';
+        // fetchUserID() {
+        //     console.log("trig")
+        //     const user = JSON.parse(localStorage.getItem('user'));
+        //     this.userID = user ? user.userID : '';
+        // },
+
+
+        async fetchUserID() {
+            try {
+                const response = await axios.get('http://localhost:8081/getCookie', {
+                    withCredentials: true
+                })
+                console.log(response.data)
+                this.userID = response.data.userID
+                console.log(this.userID)
+            } catch(err) {
+                console.error(err)
+            }
         },
 
-    //     async fetchUserID() {
-    //     try {
 
-    //         let userId = this.$route.params.id;
-            
-    //         const response = await axios.get('http://localhost:8081/families/register/${userId}', {
-    //             withCredentials: true
-    //         });
-    //         this.userId = response.data.userId;
-    //     } catch (error) {
-    //         console.error('Fejl ved at hente userID:', error);
-    //     }
-    // },
 
         async addNewFam() {
 
@@ -122,7 +125,7 @@ export default {
 
             console.log("Anmodning sendes med følgende data:", { familyName: this.familyName, userID: this.userID });
 
-
+            
 
             try {
                 console.log("trigger")

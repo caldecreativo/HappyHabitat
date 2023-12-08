@@ -36,6 +36,7 @@ export default {
     border: 1px solid black;
     border-radius: 20px;
     background: linear-gradient(to bottom, #0C1D3B, #3A4D82);
+    overflow-x: hidden;
     overflow-y: auto;
   }
 

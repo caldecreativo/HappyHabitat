@@ -2,7 +2,8 @@
     <section class="addNewFamView">
         <logo></logo>
         <div class="iconWrap">
-            <font-awesome-icon class="circleIcon" icon="circle-info" style="color: #ffffff;" @click="openInfoModal('family')" />
+            <font-awesome-icon class="circleIcon" icon="circle-info" style="color: #ffffff;"
+                @click="openInfoModal('family')" />
             <h1>Tilføj ny familie</h1>
         </div>
         <form class="formView" @submit.prevent="addNewFam">
@@ -28,6 +29,7 @@
 </template>
 
 <script>
+// Imports
 import axios from 'axios';
 import router from '@/router';
 import ErrorModal from '../components/errorModal.vue';
@@ -37,11 +39,13 @@ import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import infoModal from '../components/infoModal.vue'
 
 export default {
+    // Components
     components: {
         infoModal,
         ErrorModal,
         logo,
     },
+    // Data funktion returning components data
     data() {
         return {
             familyName: '',
@@ -49,7 +53,7 @@ export default {
             showInfoModal: null,
             showErrorModal: false,
             userID: null,
-            
+
         };
     },
     created() {
@@ -68,8 +72,8 @@ export default {
     methods: {
         ...mapActions(['validateFamName']),
 
-                // Info modal
-                openInfoModal(field) {
+        // Info modal
+        openInfoModal(field) {
             this.showInfoModal = field;
         },
 
@@ -83,40 +87,37 @@ export default {
         },
 
         closeErrorModal() {
-    this.showErrorModal = false;
-},
+            this.showErrorModal = false;
+        },
 
 
-
+        // Fetch username from localstorage
         fetchUserName() {
             const user = JSON.parse(localStorage.getItem('user'));
             this.userName = user ? user.userName : '';
         },
 
-        // fetchUserID() {
-        //     console.log("trig")
-        //     const user = JSON.parse(localStorage.getItem('user'));
-        //     this.userID = user ? user.userID : '';
-        // },
-
-
+        // Fetch user id
         async fetchUserID() {
             try {
+                // Get request to server to get user data with credentials
                 const response = await axios.get('http://localhost:8081/getCookie', {
                     withCredentials: true
                 })
                 console.log(response.data)
+
+                // Set userID from response data
                 this.userID = response.data.userID
                 console.log(this.userID)
-            } catch(err) {
+            } catch (err) {
                 console.error(err)
             }
         },
 
-
-
+        // Add new family
         async addNewFam() {
 
+            // Validation
             const isFamnameValid = await this.validateFamName(this.familyName);
             if (!isFamnameValid) {
                 this.showErrorModal = true;
@@ -125,27 +126,29 @@ export default {
 
             console.log("Anmodning sendes med følgende data:", { familyName: this.familyName, userID: this.userID });
 
-            
+
 
             try {
                 console.log("trigger")
                 console.log(this.familyName)
-                
+
+                // Post request to server to register family
                 const response = await axios.post('http://localhost:8081/families/register', {
                     familyName: this.familyName,
                     userID: this.userID
                 });
                 console.log(response)
 
-
-                // Hvis familien er oprettet succesfuldt, gem familyName i localStorage
+                // if succes store name in localstorage
                 if (response && response.data) {
                     localStorage.setItem('familyName', this.familyName);
                     console.log('Familie tilføjet til localStorage');
                 }
 
+                // redirect
                 await router.push("/bekraeft-bruger");
 
+                // error handling
             } catch (error) {
                 const errorMessage = "Fejl ved oprettelse af familie, prøv igen";
                 this.$store.commit('ERROR_MESSAGE', errorMessage);
@@ -174,7 +177,7 @@ input {
     border-radius: 15px;
     font-size: 20px;
     text-align: center;
-    
+
 }
 
 h2 {
@@ -200,15 +203,15 @@ h2 {
 
 .formView {
 
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-gap: 50px;
-margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    margin-top: 30px;
 }
 
-.iconWrap{
+.iconWrap {
     margin-top: 20px;
     margin-left: 35px;
     display: flex;
@@ -218,8 +221,7 @@ margin-top: 30px;
 
 }
 
-.circleIcon{
+.circleIcon {
     font-size: 30px;
 }
-
 </style>

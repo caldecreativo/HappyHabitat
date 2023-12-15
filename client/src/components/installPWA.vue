@@ -6,24 +6,26 @@
   export default {
       data(){
           return {
+            // See if app installation is available
               installationAvailable: false
           }
       },
+      // Lifecycle hook called after component is mounted
       mounted() {
+        // Eventlistner for beforeinstallation event
           window.addEventListener("beforeinstallprompt", event => {
               event.preventDefault(); // ask browser not to render any installion UI
-              this.bipEvent = event;
-              this.installationAvailable = true;
+              this.bipEvent = event; // Store event for later use
+              this.installationAvailable = true; // Indicate installation is avaiable
           })
       },
       methods:{
+        // Method to trigger app install process
           install(){
+            // checks if install is stored
               if(this.bipEvent) {
-                  this.bipEvent.prompt();
+                  this.bipEvent.prompt(); // show install promt to user
               } 
-              // else {
-              //     alert("check for Add to homescreen (IOS) or install in your browser menu")
-              // } 
           }
       }
   }

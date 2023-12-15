@@ -1,7 +1,7 @@
 <template>
     <div v-if="isVisible" class="modal-overlay" @click="closeInfoModal">
       <div class="modal-content">
-        <slot></slot> <!-- Her indsættes dynamisk indhold -->
+        <slot></slot> 
       </div>
     </div>
   </template>
@@ -23,13 +23,13 @@
   </script>
   
   <style>
-  @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
+
 body{
     font-family: 'Quicksand', sans-serif;
 }
 
 .modal-overlay {
-  position: absolute; /* Ændret til absolute for at være i forhold til #app */
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
@@ -39,18 +39,18 @@ body{
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; /* Værdi høj nok til at ligge over andre elementer */
+  z-index: 1000; 
 }
 
 .modal-content {
-  width: auto; /* Tilpasset bredde til mobilvisning */
-  max-width: 300px; /* Maksimal bredde baseret på #app bredde */
+  width: auto; 
+  max-width: 300px; 
   margin: auto;
   padding: 20px;
   background-color: white;
-  border-radius: 20px; /* Tilpasset til #app's border-radius */
+  border-radius: 20px; 
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-  z-index: 1001; /* Sørger for at modalen ligger over overlayet */
+  z-index: 1001; 
   background: linear-gradient(to bottom, #0C1D3B, #3A4D82);
   color: white;
 

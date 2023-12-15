@@ -7,13 +7,13 @@
                     v-model="email" placeholder="Email" required />
             </div>
             <div>
-                <input @focus="clearPlaceholder" @blur="event => restorePlaceholder(event, 'Password')" type="text"
+                <input @focus="clearPlaceholder" @blur="event => restorePlaceholder(event, 'Password')" type="password"
                     id="password" v-model="password" placeholder="Password" required />
             </div>
 
             <div class="pLogin">
-        <p>Glemt login?</p>
-      </div>
+                <p>Glemt login?</p>
+            </div>
 
             <ErrorModal :isVisible="showErrorModal" :message="getErrorMessage" @close="closeErrorModal"></ErrorModal>
 
@@ -26,29 +26,35 @@
     
 
 <script>
-  import logo from '../components/logoComp.vue';
+// Imports
+import logo from '../components/logoComp.vue';
 import router from '../router/index'
 import axios from 'axios';
 import ErrorModal from '../components/errorModal.vue';
 import { mapActions, mapGetters } from "vuex";
 
 export default {
+    // Components
     components: {
         logo,
         ErrorModal
     },
     data() {
         return {
+            // Object to store form input and variabel for modal
             email: '',
             password: '',
             showErrorModal: false,
         };
     },
+    // Computed
     computed: {
+        // Vuex getters for component
         ...mapGetters(['getErrorMessage'])
     },
-
+    // Methods
     methods: {
+        // Vuex actions for component
         ...mapActions(['validateEmail', 'validatePassword']),
 
         clearPlaceholder(event) {
@@ -59,13 +65,14 @@ export default {
                 event.target.placeholder = originalPlaceholder;
             }
         },
-
+        // Close modal
         closeErrorModal() {
             this.showErrorModal = false;
             this.$store.commit('ERROR_MESSAGE', '');
         },
-
+        // Login
         async login() {
+            // Validation
             const isEmailValid = await this.validateEmail(this.email);
             if (!isEmailValid) {
                 this.showErrorModal = true;
@@ -79,27 +86,25 @@ export default {
 
             try {
                 console.log("trigger")
-            // virker ikke!
-            const response =await axios.post('http://localhost:8081/login', {
-                email: this.email,
-                password: this.password,
-                
-            })
-            console.log('Server response:', response);
-            
-            // // Save user & token in localStorage
-            // localStorage.setItem('user', JSON.stringify(response.data));
-            
-            // if (response.data.userToken) {
-            //     localStorage.setItem('token', response.data.userToken);
-            // }
 
-            await router.push("/rediger-bruger");
+                // Post request to server with email and password as payload    
+                const response = await axios.post('http://localhost:8081/login', {
+                    email: this.email,
+                    password: this.password,
 
-            } catch(err) {
-                console.log(err);
+                })
+                console.log('Server response:', response);
+
+                // Redirect
+                await router.push("/rediger-bruger");
+
+                // error handling
+            } catch (err) {
+                const errorMessage = "Fejl ved login";
+                this.$store.commit('ERROR_MESSAGE', errorMessage);
+                this.showErrorModal = true;
             }
-            
+
 
 
         }
@@ -113,6 +118,7 @@ export default {
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
+
 .formView {
 
     display: flex;
@@ -137,8 +143,8 @@ input {
 
 input::placeholder {
     color: rgba(13, 30, 61, 0.7);
-    
-    
+
+
 }
 
 p {
@@ -154,7 +160,7 @@ p {
     justify-content: center;
     align-items: center;
     color: white;
-  }
+}
 
 
 .cornfirmBtn {
@@ -177,6 +183,6 @@ p {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    
+
 }
 </style>

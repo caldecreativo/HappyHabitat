@@ -14,27 +14,30 @@
                 <p>Minimum 5 karaktere</p>
                 <p>Ingen apostrof, mellemrum eller bindestreg</p>
             </infoModal>
+
             <div>
 
                 <input @focus="clearPlaceholder($event)" @blur="restorePlaceholder($event, 'johndoe@eksempel.dk')"
                     type="text" id="email" v-model="user.email" placeholder="johndoe@eksempel.dk" required />
             </div>
+
             <div class="iconWrap">
                 <font-awesome-icon class="circleIcon" icon="circle-info" style="color: #ffffff;"
                     @click="openInfoModal('password')" />
-                <input @focus="clearPlaceholder($event)" @blur="restorePlaceholder($event, 'password')" type="text"
+                <input @focus="clearPlaceholder($event)" @blur="restorePlaceholder($event, 'password')" type="password"
                     id="password" v-model="user.password" placeholder="Password" required />
             </div>
+
             <infoModal :isVisible="showInfoModal === 'password'" @close="showInfoModal = null">
                 <h1>Password kræver:</h1>
                 <p>Minimum 8 karaktere</p>
                 <p>Mindst ét lille bogstav, ét stort bogstav, ét tal og ét specialtegn.</p>
                 <p>Ingen apostrof eller bindestreg</p>
-
             </infoModal>
+            
             <div>
 
-                <input @focus="clearPlaceholder($event)" @blur="restorePlaceholder($event, 'Bekræft password')" type="text"
+                <input @focus="clearPlaceholder($event)" @blur="restorePlaceholder($event, 'Bekræft password')" type="password"
                     id="confirmPass" v-model="user.confirmPass" placeholder="Bekræft password" required />
             </div>
 
@@ -48,29 +51,32 @@
 </template>
 
 <script>
+// Imports
 import router from "../router/index";
 import axios from 'axios';
 import ErrorModal from '../components/errorModal.vue';
 import infoModal from '../components/infoModal.vue'
 import { mapActions, mapGetters } from "vuex";
-
-
 import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 
 
 export default {
+    // Components
     components: {
         infoModal,
         ErrorModal
     },
+    // Data funktion returning components data
     data() {
         return {
+            // user data objects for storing form inputs
             user: {
                 userName: '',
                 email: '',
                 password: '',
                 confirmPass: '',
             },
+            // Varibles for modal display and error handling
             showInfoModal: null,
             showErrorModal: false,
             statusMsg: '',
@@ -79,13 +85,17 @@ export default {
 
 
     },
+    // computed properties 
     computed: {
         appIcon() {
             return faCircleInfo
         },
+        // Vuex getters for component
         ...mapGetters(['getErrorMessage']),
     },
+    // Methods
     methods: {
+        // Vuex actions for component
         ...mapActions(['validateUsername', 'validateEmail', 'validatePassword']),
 
         clearPlaceholder(event) {
@@ -102,7 +112,7 @@ export default {
         openInfoModal(field) {
             this.showInfoModal = field;
         },
-
+        // close error modal
         closeErrorModal() {
             this.showErrorModal = false;
             this.$store.commit('ERROR_MESSAGE', '');
@@ -113,6 +123,7 @@ export default {
 
         async signUp() {
 
+            // validations
             const isUsernameValid = await this.validateUsername(this.user.userName);
             if (!isUsernameValid) {
                 this.showErrorModal = true;
@@ -141,24 +152,21 @@ export default {
                 const response = await axios.post('http://localhost:8081/register', this.user)
                 console.log(response)
 
-                // Log hele responsobjektet for at se, hvad du modtager
+
                 console.log('Server response:', response.data);
 
-         
+
                 // Save username to localstorage
                 localStorage.setItem('userName', this.user.userName);
-                
+
 
 
                 // Redirect to addFam
                 await router.push("/vaelg-familie");
-                
+
 
 
             } catch (err) {
-                console.log("fail")
-                console.log(this.user)
-                console.log(err)
                 const errorMessage = "Der opstod fejl under registrering, prøv igen";
                 this.$store.commit('ERROR_MESSAGE', errorMessage);
                 this.showErrorModal = true;

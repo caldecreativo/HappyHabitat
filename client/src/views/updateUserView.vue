@@ -69,6 +69,7 @@
 </template>
 
 <script>
+// Imports
 import axios from 'axios';
 import ErrorModal from '../components/errorModal.vue';
 import infoModal from '../components/infoModal.vue'
@@ -76,12 +77,15 @@ import { faCircleInfo, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { mapActions, mapGetters } from "vuex";
 
 export default {
+  // Components
   components: {
     infoModal,
     ErrorModal
   },
+  // Data funktion returning components data
   data() {
     return {
+      // user data objects for storing form inputs
       user: {
         userName: '',
         email: '',
@@ -91,12 +95,14 @@ export default {
         newPassword: '',
         confirmPass: ''
       },
+      // Varibles for modal display and error handling
       showInfoModal: null,
       showErrorModal: false,
       errorMessage: '',
       statusMsg: '',
     };
   },
+  // computed properties 
   computed: {
     appIcon() {
       return faCircleInfo
@@ -104,29 +110,34 @@ export default {
     xmarkIcon() {
       return faXmark;
     },
+    // Vuex getters for component
     ...mapGetters(['getErrorMessage']),
   },
+  // Methods
   methods: {
+    // Vuex actions for component
     ...mapActions(['validateNewUsername', 'validateNewEmail', 'validateNewPassword']),
     // Info modal
     openInfoModal(field) {
       this.showInfoModal = field;
     },
+    // close error modal
     closeErrorModal() {
       this.showErrorModal = false;
       this.$store.commit('ERROR_MESSAGE', '');
     },
-
+    // Navigate back in browser
     goBack() {
-      this.$router.go(-1); // Bruger Vue-routerens go-metode til at gå et skridt tilbage i historikken
+      this.$router.go(-1);
     },
 
-
+    // Update user info
     async updateUser() {
-      // Objekt til at holde opdateringer
+
+      // Object to hold updates
       const updates = {};
 
-      // Valider og tilføj kun de nye værdier, som brugeren ønsker at opdatere
+      // Validate and add new values if user wants to update
       if (this.user.newUserName) {
         const isValidUsername = await this.validateNewUsername(this.user.newUserName);
         if (!isValidUsername) {
@@ -154,7 +165,7 @@ export default {
         updates.newPassword = this.user.newPassword;
       }
 
-      // Hvis der ikke er nogen ændringer, vis en fejl
+      // Show error if theres no changes to update
       if (Object.keys(updates).length === 0) {
         const errorMessage = "Ingen ændringer at opdatere.";
         this.$store.commit('ERROR_MESSAGE', errorMessage);
@@ -172,7 +183,7 @@ export default {
         return;
       }
 
-
+      // send the update request
       try {
         const response = await axios.put('http://localhost:8081/updateUser', {
           withCredentials: true,
@@ -182,13 +193,13 @@ export default {
           password: this.user.password,
         });
 
-        // Håndter respons
+        // Handle response
         if (response.status === 200) {
           const errorMessage = "Brugeroplysningerne er opdateret.";
           this.$store.commit('ERROR_MESSAGE', errorMessage);
           this.showErrorModal = true;
 
-          // Opdater lokale oplysninger eller gør, hvad der er nødvendigt her.
+          // Update local data 
         } else {
           const errorMessage = "Fejl ved opdatering af brugeroplysningerne.";
           this.$store.commit('ERROR_MESSAGE', errorMessage);
@@ -203,50 +214,6 @@ export default {
       }
     }
 
-    // async updateUser() {
-    //     const isNewUsernameValid = await this.validateNewUsername(this.user.newUserName);
-    //         if (!isNewUsernameValid) {
-    //             this.showErrorModal = true;
-    //             return;
-    //         }
-    //         const isNewEmailValid = await this.validateNewEmail(this.user.newEmail);
-    //         if (!isNewEmailValid) {
-    //             this.showErrorModal = true;
-    //             return;
-    //         }
-    //         const isNewPasswordValid = await this.validateNewPassword(this.user.newPassword);
-    //         if (!isNewPasswordValid) {
-    //             this.showErrorModal = true;
-    //             return;
-    //         }
-
-    //   try {
-    //     const response = await axios.put('http://localhost:8081/updateUser', {
-    //       withCredentials: true,
-    //       userName: this.user.userName,
-    //       email: this.user.email,
-    //       password: this.user.password,
-    //       newUserName: this.user.newUserName,
-    //       newEmail: this.user.newEmail,
-    //       newPassword: this.user.newPassword,
-    //     });
-
-    //     // Hvis opdatering lykkes
-    //     if (response.status === 200) {
-    //       // Gem de nye oplysninger i localStorage
-
-    //       // localStorage.setItem('user', JSON.stringify(response.data.User)); // lav ny cookie
-
-    //       // Behandle svar fra serveren efter behov
-    //       this.statusMsg = 'Bruger opdateret';
-    //     } else {
-    //       this.statusMsg = 'Fejl ved opdatering';
-    //     }
-    //   } catch (err) {
-    //     console.error(err);
-    //     this.statusMsg = 'Fejl ved opdatering';
-    //   }
-    // },
   },
 };
 </script>

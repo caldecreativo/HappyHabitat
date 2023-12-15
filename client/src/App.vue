@@ -15,7 +15,7 @@ export default {
 </script>
 
 <style >
-@import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
 
 @media screen and (min-width: 600px) {
   body {
@@ -30,6 +30,7 @@ export default {
   }
 
   #app {
+    position: relative;
     width: 375px;
     max-width: 100vw;
     max-height: 667px;

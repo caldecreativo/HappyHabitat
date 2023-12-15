@@ -4,7 +4,7 @@
         <h1> "{{ userName }}"</h1>
         <h1> "{{ familyName }}"</h1>
 
-            <h2>Super! <br> Dit nye eventyr venter. <br> Bekræft og derefter log ind <br> for at fortætte rejsen.</h2>
+        <h2>Super! <br> Dit nye eventyr venter. <br> Bekræft og derefter log ind <br> for at fortætte rejsen.</h2>
 
         <div class="confrimBtnBox">
             <router-link to="/login"><button class="cornfirmBtn" type="submit">Bekræft</button></router-link>
@@ -13,31 +13,37 @@
 </template>
 
 <script>
+// Import
 import logo from '../components/logoComp.vue'
 
 export default {
+    // Component
     components: {
         logo,
     },
     data() {
         return {
+            // Variables to store names
             userName: '',
             familyName: ''
         };
     },
+    // Lifecicle hook called after comp is created
     created() {
         this.fetchUserName();
         this.fetchFamilyName();
 
     },
-
+    // Methods
     methods: {
+        // Fetch username from localstorage
         fetchUserName() {
             const userName = localStorage.getItem('userName');
             if (userName) {
                 this.userName = userName;
             }
         },
+        // Fetch familyname from localstorage
         fetchFamilyName() {
             const familyName = localStorage.getItem('familyName');
             if (familyName) {

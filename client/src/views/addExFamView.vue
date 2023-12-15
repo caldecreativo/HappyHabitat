@@ -2,7 +2,8 @@
     <section class="addExFamView">
         <logo></logo>
         <div class="iconWrap">
-            <font-awesome-icon class="circleIcon" icon="circle-info" style="color: #ffffff;" @click="openInfoModal('family')" />
+            <font-awesome-icon class="circleIcon" icon="circle-info" style="color: #ffffff;"
+                @click="openInfoModal('family')" />
             <h1>Tilslut til familie</h1>
         </div>
         <form class="formView" @submit.prevent="addExFam">
@@ -20,13 +21,14 @@
             <h2>Bliv en del af eventyret!</h2>
 
             <ErrorModal :isVisible="showErrorModal" :message="getErrorMessage" @close="closeErrorModal"></ErrorModal>
-            
+
             <button class="cornfirmBtn" type="submit">Tilføj</button>
         </form>
     </section>
 </template>
 
 <script>
+// Imports
 import axios from 'axios';
 import router from '@/router';
 import { mapActions, mapGetters } from "vuex";
@@ -36,6 +38,7 @@ import logo from '../components/logoComp.vue'
 import infoModal from '../components/infoModal.vue'
 
 export default {
+    // Components
     components: {
         logo,
         infoModal,
@@ -50,26 +53,28 @@ export default {
             userID: null,
         };
     },
+    // Lifecicle hook called after comp is created
     created() {
         this.fetchUserName();
         this.fetchUserID();
     },
-
+    // Computed
     computed: {
         appIcon() {
             return faCircleInfo
         },
-
+        // Vuex getters for component
         ...mapGetters(['getErrorMessage']),
     },
-
+    // Methods
     methods: {
+        // Vuex actions for component
         ...mapActions(['validateFamName']),
 
-// Info modal
-openInfoModal(field) {
-this.showInfoModal = field;
-},
+        // Info modal
+        openInfoModal(field) {
+            this.showInfoModal = field;
+        },
 
 
         clearPlaceholder(event) {
@@ -85,26 +90,31 @@ this.showInfoModal = field;
             this.showErrorModal = false;
             this.$store.commit('ERROR_MESSAGE', '');
         },
-
+        // Fetch username from localstorage
         fetchUserName() {
             const user = JSON.parse(localStorage.getItem('user'));
             this.userName = user ? user.userName : '';
         },
-
+        // Fetch user id
         async fetchUserID() {
             try {
+                // Get request to server to get user data with credentials
                 const response = await axios.get('http://localhost:8081/getCookie', {
                     withCredentials: true
                 })
                 console.log(response.data)
+                // Set userID from response data
                 this.userID = response.data.userID
                 console.log(this.userID)
-            } catch(err) {
+            } catch (err) {
                 console.error(err)
             }
         },
 
+        // Add to existing family
         async addExFam() {
+
+            // Validation
             const isFamnameValid = await this.validateFamName(this.familyName);
             if (!isFamnameValid) {
                 this.showErrorModal = true;
@@ -115,21 +125,24 @@ this.showInfoModal = field;
             try {
                 console.log("trigger")
                 console.log(this.familyName)
-                // virker!
-                const response =await axios.post('http://localhost:8081/families/addToFamily', {
+
+                // Post request to server to add to existing family
+                const response = await axios.post('http://localhost:8081/families/addToFamily', {
                     familyName: this.familyName,
                     userID: this.userID
                 });
                 console.log(response)
 
-                // Hvis familien er oprettet succesfuldt, gem familyName i localStorage
+                // if succes store name in localstorage
                 if (response && response.data) {
                     localStorage.setItem('familyName', this.familyName);
                     console.log('Familie tilføjet til localStorage');
                 }
 
+                // redirect
                 await router.push("/bekraeft-bruger");
 
+                // error handling
             } catch (error) {
                 const errorMessage = "Familie findes ikke";
                 this.$store.commit('ERROR_MESSAGE', errorMessage);
@@ -186,15 +199,15 @@ h2 {
 
 .formView {
 
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-gap: 50px;
-margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    margin-top: 30px;
 }
 
-.iconWrap{
+.iconWrap {
     margin-top: 20px;
     margin-left: 35px;
     display: flex;
@@ -204,8 +217,7 @@ margin-top: 30px;
 
 }
 
-.circleIcon{
+.circleIcon {
     font-size: 30px;
 }
-
 </style>

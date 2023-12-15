@@ -1,4 +1,4 @@
-const { body, param } = require("express-validator");
+const { body } = require("express-validator");
 
 const addToFamValidationRules = [
   body("familyName")
@@ -14,10 +14,7 @@ const addToFamValidationRules = [
       return true;
     }),
 
-//   param("userID")
-//     .trim()
-//     .isLength({ min: 5 })
-//     .matches(/user\d+/),
+
 ];
 
 module.exports = addToFamValidationRules;

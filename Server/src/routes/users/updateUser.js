@@ -2,6 +2,7 @@ const User = require("../../models/UserModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
+// JWT secret 
 const jwtSecretKey = "" + process.env.JWT_KEY;
 
 module.exports = async (req, res) => {
@@ -9,28 +10,28 @@ module.exports = async (req, res) => {
   console.log(correntUser);
 
   try {
-    // Hent brugerdata fra anmodningen
+    // Get userdata from body
     const { userName, email, password, newUserName, newEmail, newPassword } =
       req.body;
 
-    // Find brugeren i databasen
+    // Find user in DB
     const penguinUser = await User.findOne({ email });
 
-    // Hvis brugeren ikke findes
+    // If user doesn't exist
     if (!penguinUser) {
       return res.status(404).send("Bruger findes ikke");
     }
 
-    // Hvis brugeren eksisterer
+    // If user exist
     if (await bcrypt.compare(password, penguinUser.password)) {
-      // Opdater brugeroplysningerne
+      // Update userinformation
       penguinUser.userName = newUserName || penguinUser.userName;
       penguinUser.email = newEmail || penguinUser.email;
       penguinUser.password = newPassword
         ? await bcrypt.hash(newPassword, 10)
         : penguinUser.password;
 
-      // Generer en ny token
+      // Generate new token
       const userToken = jwt.sign(
         { userID: penguinUser.userID, email: penguinUser.email },
         jwtSecretKey,
@@ -39,9 +40,9 @@ module.exports = async (req, res) => {
 
       // Attach token to user object
       penguinUser.userToken = userToken;
-      console.log(userToken)
+      console.log(userToken);
 
-      // Gem de opdaterede brugeroplysninger i databasen
+      // Save updates to DB
       await penguinUser.save();
 
       res.cookie("JWT", userToken, {
@@ -50,11 +51,11 @@ module.exports = async (req, res) => {
         maxAge: 1 * 60 * 60 * 1000,
       });
 
-      // Send de opdaterede oplysninger og token som svar
+      // Send updated info and token as answer
       return res.status(200).send({ User: penguinUser, userToken: userToken });
     }
 
-    // Håndter fejl ved forkerte oplysninger
+    // Errors with wrong answers
     return res.status(400).send("Forkerte oplysninger");
   } catch (error) {
     return res.status(500).json({ error: error.message });

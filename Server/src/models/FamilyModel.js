@@ -1,21 +1,29 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const familySchema = new mongoose.Schema({
+// New schema for family
+const familySchema = new mongoose.Schema(
+  {
     familyID: {
-        type: String,
-        required: true,
-        unique: true
+      type: String,
+      required: true,
+      unique: true,
     },
     familyName: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
-    familyMember: [{
+    familyMember: [
+      {
         type: String,
-    }]
-},
-{collection: "Families"})
+      },
+    ],
+  },
+  // specifies collection in DB
+  { collection: "Families" }
+);
 
-const FamilyModel = mongoose.model("Families", familySchema)
+// Create model from schema
+const FamilyModel = mongoose.model("Families", familySchema);
 
+// export model
 module.exports = FamilyModel;
